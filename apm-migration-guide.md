@@ -19,3 +19,17 @@ the customer success partner who helps the customer with adopting this and other
 the 
 Your contribution to this guide is very much appreciated by the SAP APM community so please feel free to create issues or to even create pull requests if you want to correct or enhance it.
 # Migration Scenarios
+
+```mermaid
+graph TD;
+    PDMS-->APM-eiot;
+    PAI-->APM-eiot;
+    ASPM-->APM-eiot;
+    APM-siot-->APM-eiot;
+```
+# Migration Steps - APM-siot to APM-eiot without usage of Asset Health features
+- [x] Customer IT and evtl partner read this guide
+- [ ] Customer IT and SAP customer success partner to project future usage
+- [ ] Customer Buyer swap license with SAP account executive from 8012342 to 8019182
+- [ ] Wait for tenant copy/swap to become available
+- [ ] Create a ticket to copy/swap your tenant
