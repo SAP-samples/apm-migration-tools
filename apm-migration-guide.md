@@ -6,8 +6,7 @@ The alternative to PDMS, PAI and ASPM and the successor to APM based on SAP IoT 
 This guide intends to show the way to customers, partners and involved SAP personell how this migration can be done commercially and technically.
 # Audience and Contribution
 This guide is meant for everyone driving or participating in the migration to APM based on Embedded IoT.
-This guide is continously updated by the APM migration coaches that work with customers that are productive on the legacy products to coach them in the migration.
-might also be relevant to customers and partners that have not yet been fully productive with the legacy products or that are implementing the new APM architecture.
+This guide is continously updated by the dedicated APM migration coaches that work with customers that are productive on the legacy products to coach them in the migration. But it might also be relevant to customers and partners that have not yet been fully productive with the legacy products or that are implementing the new APM architecture and are knowledgeable about the legacy products.
 At the customer this might be the Reliability Engineer that wants to understand the functional differences and the implications to his data,
 the IT person that wants to understand the necessary technical steps and plan the migration or
 the buer that wants to understand how entitlements and costs change with the new product.
