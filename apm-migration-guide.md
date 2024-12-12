@@ -1,27 +1,35 @@
----
-title: APM Migration Guide
-layout: inline
----
 # Introduction
 The legacy products SAP PDMS (Predictive Maintenance and Service, SAP ASPM (Asset Strategy and Performance Management),
 SAP PAI (Predictive Asset Insights) or
 SAP APM based on SAP IoT (Asset Performance Management) have been sunset by SAP in 2022, 2023 and 2024 so that new customers cannot buy these products anymore.
+
 The alternative to PDMS, PAI and ASPM and the successor to APM based on SAP IoT is APM based on Embedded IoT made generally available in October 2024.
+
 This guide intends to show the way to customers, partners and involved SAP personell how this migration can be done commercially and technically.
 # Audience and Contribution
+
 This guide is meant for everyone driving or participating in the migration to APM based on Embedded IoT.
-This guide is continously updated by the dedicated APM migration coaches that work with customers that are productive on the legacy products to coach them in the migration. But it might also be relevant to customers and partners that have not yet been fully productive with the legacy products or that are implementing the new APM architecture and are knowledgeable about the legacy products.
-At the customer this might be the Reliability Engineer that wants to understand the functional differences and the implications to his data,
-the IT person that wants to understand the necessary technical steps and plan the migration or
-the buer that wants to understand how entitlements and costs change with the new product.
+
+This guide is continously updated by the dedicated _APM migration coache_s that work with customers that are productive on the legacy products to coach them in the migration. But it might also be relevant to customers and partners that have not yet been fully productive with the legacy products or that are implementing the new APM architecture and are knowledgeable about the legacy products.
+
+At the customer this might be the _Reliability Engineer_ that wants to understand the functional differences and the implications to his data,
+the _IT_ person that wants to understand the necessary technical steps and plan the migration or
+the _Buyer_ that wants to understand how entitlements and costs change with the new product.
+
 The partner might be an implementation partner chosen by the customer to support the migration,
 a software partner that provides complementary software,
 a software partner that provides components of APM
 or a reseller that sells APM.
-The SAP personell is the account executive who needs to negotiate the new license terms and conditions with the customer buyer,
-the customer success partner who helps the customer with adopting this and other DSC (Digital Supply Chain) solutions,
-the 
-Your contribution to this guide is very much appreciated by the SAP APM community so please feel free to create issues or to even create pull requests if you want to correct or enhance it.
+To simplify refering to either the in-house customer IT or the personell of the implementation partner of choice we will in the guide always refer to _IT_ simply.
+
+The SAP personell is the _Account Executive_ who needs to negotiate the new license terms and conditions with the customer buyer,
+the _Customer Success Partner_ who helps the customer with adopting this and other DSC (Digital Supply Chain) solutions,
+the _Product Team Member_ (e.g. a developer or a product manager) helping to understand the product or answering a support ticket.
+To simplify refering to the reseller account executive or the SAP account executive we refer to only to the _Account Executive_.
+
+We will use the above roles marked in italic consistently throughout the guide to allow you to find more easily the aspects related to your role.
+> [!NOTE]
+> Your contribution to this guide is very much appreciated by the SAP APM community so please feel free to create issues or to create pull requests if you want to correct or enhance it.
 # Migration Scenarios
 
 ```mermaid
@@ -37,10 +45,4 @@ graph TD;
 - [ ] Customer Buyer swap license with SAP account executive from 8012342 to 8019182
 - [ ] Wait for tenant copy/swap to become available
 - [ ] Create a ticket to copy/swap your tenant
-
-This shows who does what:
-```yaml annotate
-step1: read guide # Customer IT, Partner
-step2: project future usage # Reliability Engineer, Customer IT
-```
 
