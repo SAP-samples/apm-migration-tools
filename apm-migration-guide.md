@@ -1,3 +1,6 @@
+---
+layout: inline
+---
 # Introduction
 The legacy products SAP PDMS (Predictive Maintenance and Service, SAP ASPM (Asset Strategy and Performance Management),
 SAP PAI (Predictive Asset Insights) or
@@ -33,3 +36,10 @@ graph TD;
 - [ ] Customer Buyer swap license with SAP account executive from 8012342 to 8019182
 - [ ] Wait for tenant copy/swap to become available
 - [ ] Create a ticket to copy/swap your tenant
+
+This shows who does what:
+```yaml annotate
+step1: read guide # Customer IT, Partner
+step2: project future usage # Reliability Engineer, Customer IT
+```
+
