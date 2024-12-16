@@ -34,10 +34,9 @@ We will use the above roles marked in italic consistently throughout the guide t
 
 ```mermaid
 graph TD;
-    PDMS-->APM-eiot;
-    PAI-->APM-eiot;
-    ASPM-->APM-eiot;
-    APM-siot-->APM-eiot;
+    PDMS/PAI-->export-->manual-checks-and-transformation-->setup-APM-eiot-tenant-->import-->APM-eiot;
+    ASPM-->export-->manual-checks-and-transformation-->setup-APM-eiot-tenant-->import-->APM-eiot;
+    APM-siot-->export-of-time-series-data-->setup-APM-eiot-tenant-->tenant-swap/copy-->import-of-time-series-data-->reestablishing-rules-logic-->APM-eiot;
 ```
 The migration from PDMS and PAI are really based on the same technology below. The rest of the guide will only refer to PAI.
 
