@@ -21,12 +21,12 @@ Please edit this file as it is the primary description file for your project. Yo
 
 ## Description
 <!-- Please include SEO-friendly description -->
-This repository contains a list of tools for migrating customers from PDMS / ASPM to APM. Following are the list of available tools in this repository.
-| Tool | PDMS → APM | ASPM → APM |
+This repository contains a list of tools for migrating customers from PAI(PDMS) / ASPM to APM. Following are the list of available tools in this repository.
+| Tool | PAI → APM | ASPM → APM |
 | ----- | :---------: | :---------: |
 | **Indicator** | ✔ | ✔ |
-| **Alerts**    | ✔ | ✔ |
-| **Timeseries** | ✔ | ✔ |
+| **Alerts**    | ✔ | n/a |
+| **Timeseries** | ✔ | n/a |
 
 The tool is built using Python Scripting in Jupyter Notebooks for easier sequencing & execution of the migration steps.
 
@@ -87,8 +87,6 @@ No known Issues
 
 ## How to obtain support
 [Create an issue](https://github.com/SAP-samples/apm-migration-tools/issues) in this repository if you find a bug or have questions about the content.
- 
-For additional support, [ask a question in SAP Community](https://answers.sap.com/questions/ask.html).
 
 ## Contributing
 If you wish to contribute code, offer fixes or improvements, please send a pull request. Due to legal reasons, contributors will be asked to accept a DCO when they create the first pull request to this project. This happens in an automated fashion during the submission process. SAP uses [the standard DCO text of the Linux Foundation](https://developercertificate.org/).
