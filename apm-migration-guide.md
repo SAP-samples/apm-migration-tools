@@ -152,16 +152,69 @@ Another benefit is that the 25GB (gigaybytes) offered in the base license allow 
 Please take the limitations in regards of how much real-time data you can submit into account - the note at https://me.sap.com/notes/3502042 describes the limitations in detail.
 
 The second option is planned to become available in Q2 2025 (see roadmap for APM at https://roadmaps.sap.com/board?PRODUCT=73555000100800003351&range=CURRENT-LAST#;INNO=F97566F157581EEEAEAAF56AD394D311) is called _Device Integration_ and allows you to make full use of the underlying Cumulocity device management possibilities.
-Hence you can onboard devices directly via the Internet and leverage common protocols like mqtt. Each indicator value can be sent as it happens individually. The base license includes 1 million messages per month and if more are required additional capacity units need to be licensed.
+Hence you can onboard devices directly via the Internet and leverage common protocols like mqtt.
+Each indicator value can be sent as it happens individually. The base license includes 1 million messages per month and if more are required additional capacity units need to be licensed.
 
 Both options will be available in the future but for the migration the question is which one to choose to migrate based on it.
-For most customers this means one of 3 things to do in the migration:
+For most customers this means one of 4 things to do change with the migration:
 1. api: Continue to use (or newly implement) api based ingestion taking into acount current limitation of a maximum of 100 000 measurements per day across all equipments.
 2. file upload: Implement the new file upload. Its usually facilitated by a custom developed script that is run e.g. every hour to convert the data into the format required by APM and then upload it.
-3. mqtt: Wait for the mqtt based ingestion to become available, reonboard all devices and adjust payload to match the mqtt format required by the new APM architecture/cumulocity.
+3. mqtt: Wait for the mqtt based ingestion to become available, evtl reonboard all devices and evtl adjust payload to match the mqtt format required by the new APM architecture/cumulocity.
+4. A combination of the above options
+
+# Feature Comparison
+
+This comparison only shows differences. All features that are available across all products are not listed (e.g. the ability to create a custom Fiori Launchpad).
+
+| Topic      | PAI | ASPM | APM siot | APM eiot |
+|-------     |-----|------|----------|----------|
+| Data Model | Asset Central Foundation | ACF | ERP | ERP |
+| Multi Backend | Yes | Yes | No | No |
+|ECC Version|||||
+|S/4 Version|||||
+|Productive Service Plan|No|No|No|Yes|
+|Datacenter|eu10,eu20,us10,us20|eu10,eu20,us10,us20|eu10,eu20,us10,us20|eu20,us20|
+|Standalone capable|Yes|Yes|No|No|
+|Model Concept|Yes|Yes|No|No|
+|Indicator Groups|Yes|Yes|No|?|
+|System Concept|Yes|Yes|Planned|Planned|
+|Navigation to ERP|||||
+|Navigation from ERP|||||
+|Checklists|No|Yes|No|No|
+|Risk Based Inspections|No|Partner|Partner|Partner|
+|Anomaly Detection|Yes|n/a|Yes|Planned|
+|Embedded SAC|Yes|Yes|Yes|Planned|
+|Custom ML Models|Yes|n/a|Yes|?|
+|Streaming Rules|Yes|n/a|Yes|Planned|
+|Scheduled Rules|Yes|n/a|Yes|Yes|
+|Batch Upload|No|n/a|No|Yes|
+|Device Management|Yes|n/a|Yes|Planned|
+|View Work Orders|||||
+|View Technical Objects|||||
+|Create Rules via Recommendations|No|No|Yes|Planned|
+||||||
+||||||
+||||||
+
+The following chapters describe the Topics listed above and how to mitigate if you are affected by the difference when migrating.
+
+## Data Model
+
+The ACF data model was brought forward by Business Network for Assets and is still used there.
+The data model used by APM is based directly on the concepts known from EAM in SAP ERP and is relating to the "One Domain Model".
+
+## Multi Backend
+
+With former products hooking up one tenant to multiple ERPs was possible. With APM this is not possible anymore.
+If you have multiple ERPs you need to license additional test or production tenants from SAP for each.
+
+...
+
 
 # Planned Improvements to this Guide
 
-Provide the list of differences and the mitigations for ASPM, PAI and APM siot vs APM eiot as a starting point.
+Provide descriptions and mitigations for feature differences between ASPM, PAI and APM siot vs APM eiot.
 
-provide example of how many measurements can eb sent regularly with the base license and the capacity units
+Mention Plant Connectivity and its future.
+
+Provide example of how many measurements can be sent regularly with the base license alone from devices, via api or via file upload.
