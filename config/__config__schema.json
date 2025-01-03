@@ -53,13 +53,7 @@
         },
         "level": {
           "type": "string",
-          "enum": [
-            "DEBUG",
-            "INFO",
-            "WARNING",
-            "ERROR",
-            "CRITICAL"
-          ],
+          "enum": ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"],
           "default": "INFO"
         },
         "print": {
@@ -67,9 +61,7 @@
           "default": false
         }
       },
-      "required": [
-        "directory"
-      ]
+      "required": ["directory"]
     },
     "Database": {
       "type": "object",
@@ -87,10 +79,7 @@
           "default": false
         }
       },
-      "required": [
-        "connection",
-        "drop_reload"
-      ],
+      "required": ["connection", "drop_reload"],
       "title": "Database"
     },
     "Load": {
@@ -108,10 +97,7 @@
           }
         }
       },
-      "required": [
-        "indicator",
-        "time-series"
-      ],
+      "required": ["indicator", "time-series"],
       "title": "Load"
     },
     "Extract": {
@@ -129,9 +115,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "directory"
-          ]
+          "required": ["directory"]
         },
         "time-series": {
           "type": "object",
@@ -139,17 +123,21 @@
           "properties": {
             "directory": {
               "type": "string"
+            },
+            "time_range_from": {
+              "type": "string"
+            },
+            "time_range_to": {
+              "type": "string"
+            },
+            "time_range_interval": {
+              "type": "string"
             }
           },
-          "required": [
-            "directory"
-          ]
+          "required": ["directory", "time_range_to", "time_range_from"]
         }
       },
-      "required": [
-        "time-series",
-        "indicator"
-      ],
+      "required": ["time-series", "indicator"],
       "title": "Extract"
     },
     "Filters": {
@@ -169,10 +157,7 @@
           }
         }
       },
-      "required": [
-        "models_exclude",
-        "models_include"
-      ],
+      "required": ["models_exclude", "models_include"],
       "title": "Filters"
     },
     "System": {
@@ -182,29 +167,19 @@
         "flp": {
           "type": "string",
           "format": "uri",
-          "qt-uri-protocols": [
-            "https"
-          ]
+          "qt-uri-protocols": ["https"]
         },
         "name": {
           "type": "string"
         },
         "type": {
           "type": "string",
-          "enum": [
-            "APM",
-            "IOT",
-            "ERP",
-            "ACF",
-            "PAI"
-          ]
+          "enum": ["APM", "IOT", "ERP", "ACF", "PAI"]
         },
         "host": {
           "type": "string",
           "format": "uri",
-          "qt-uri-protocols": [
-            "https"
-          ]
+          "qt-uri-protocols": ["https"]
         },
         "client": {
           "type": "string",
@@ -225,16 +200,9 @@
         },
         "iot_endpoints": {
           "$ref": "#/$defs/IOT_Endpoints"
-        },
-        "config": {
-          "$ref": "#/$defs/IOT_Config"
         }
       },
-      "required": [
-        "credentials",
-        "name",
-        "type"
-      ],
+      "required": ["credentials", "name", "type"],
       "allOf": [
         {
           "if": {
@@ -245,9 +213,7 @@
             }
           },
           "then": {
-            "required": [
-              "sys_id"
-            ]
+            "required": ["sys_id"]
           }
         }
       ],
@@ -266,9 +232,7 @@
         "token_url": {
           "type": "string",
           "format": "uri",
-          "qt-uri-protocols": [
-            "https"
-          ]
+          "qt-uri-protocols": ["https"]
         },
         "x_api_key": {
           "type": "string"
@@ -290,30 +254,22 @@
         "config_thing": {
           "type": "string",
           "format": "uri",
-          "qt-uri-protocols": [
-            "https"
-          ]
+          "qt-uri-protocols": ["https"]
         },
         "thing": {
           "type": "string",
           "format": "uri",
-          "qt-uri-protocols": [
-            "https"
-          ]
+          "qt-uri-protocols": ["https"]
         },
         "cold_store": {
           "type": "string",
           "format": "uri",
-          "qt-uri-protocols": [
-            "https"
-          ]
+          "qt-uri-protocols": ["https"]
         },
         "cold_store_download": {
           "type": "string",
           "format": "uri",
-          "qt-uri-protocols": [
-            "https"
-          ]
+          "qt-uri-protocols": ["https"]
         }
       },
       "required": [
@@ -339,15 +295,10 @@
               "type": "string"
             }
           },
-          "required": [
-            "directory"
-          ]
+          "required": ["directory"]
         }
       },
-      "required": [
-        "indicator",
-        "time-series"
-      ],
+      "required": ["indicator", "time-series"],
       "title": "Transform"
     },
     "Indicator": {
@@ -407,32 +358,7 @@
           ]
         }
       },
-      "required": [
-        "directory",
-        "udr_input",
-        "defaults"
-      ],
-      "title": "Indicator"
-    },
-    "IOT_Config": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "time_range_from": {
-          "type": "string"
-        },
-        "time_range_to": {
-          "type": "string"
-        },
-        "time_range_interval": {
-          "type": "string"
-        }
-      },
-      "required": [
-        "time_range_from",
-        "time_range_to",
-        "time_range_interval"
-      ],
+      "required": ["directory", "udr_input", "defaults"],
       "title": "Indicator"
     }
   }
