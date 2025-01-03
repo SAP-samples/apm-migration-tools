@@ -90,17 +90,17 @@ Navigate to the `/notebooks` directory. Notebooks specific to the tool may be ex
 |  |    |
 | --------- | ------------- |
 | **Indicators**| [Documentation](docs/indicator-migration.md)|
-| 1 | `Indicators-01-Extract-Stage.ipynb` |  
+| 1 | `Indicators-01-Extract-Stage.ipynb` |
 | 2 | `Indicators-02-Transform-1-UDR-Generate.ipynb` |
 | 3 | `Indicators-02-Transform-2-UDR-Load.ipynb` |
 | 4 | `Indicators-03-Load-1-Sync.ipynb` |
 | 5 | `Indicators-03-Load-2-Validate.ipynb` |
 | 6 | `Indicators-03-Load-3-Data-Load.ipynb` |
-| **Timeseries** |[Documentation](wrong_link.md)|
-| 1 | `IOT-Extract-Time-Series-Data-From-IOT.ipynb` |  
+| **Timeseries** |[Documentation](docs/time-series-migration.md)|
+| 1 | `IOT-Extract-Time-Series-Data-From-IOT.ipynb` |
 | 2 | `IOT-Transform-Time-Series-Data-To-eIOT.ipynb` |
 | **Alerts** |[Documentation](wrong_link.md)|
-| 1 | `Alerts.ipynb` |  
+| 1 | `Alerts.ipynb` |
 
 ## Known Issues
 <!-- You may simply state "No known issues. -->
