@@ -20,7 +20,7 @@ objects in SAP PAI.
   - [Iterate over each CSV file](#iterate-over-each-csv-file)
   - [Determine eIOT mapping for each TO and respective indicators](#determine-eiot-mapping-for-each-to-and-respective-indicators)
   - [Create datasets with newly mapped eIOT id's for each indicator](#create-datasets-with-newly-mapped-eiot-ids-for-each-indicator)
-  - [Transform dataset to dataframe and pivot the indicators as columns for key: managedObjectId, _time, measuringNodeId](#transform-dataset-to-dataframe-and-pivot-the-indicators-as-columns-for-key-managedobjectid-time-measuringnodeid)
+  - [Transform dataset to dataframe and pivot the indicators](#transform-dataset-to-dataframe-and-pivot-the-indicators)
   - [Create parquet dataformat schema](#create-parquet-dataformat-schema)
   - [Write parquet file to disk](#write-parquet-file-to-disk)
 - [Load Data](#load-data)
@@ -28,7 +28,7 @@ objects in SAP PAI.
   - [Combine parquet files](#combine-parquet-files)
   - [Upload files to eIOT](#upload-files-to-eiot)
   - [Check file upload status](#check-file-upload-status)
-- [Trouble Shooting](#trouble-shooting)
+- [Troubleshooting](#troubleshooting)
 - [List of Endpoints](#list-of-endpoints)
   - [Extraction](#extraction)
   - [Transform](#transform)
@@ -165,7 +165,7 @@ After the mapping for the technical objects and indicators are derived, we are c
 for each measurement with the assigned _time, managedObjectId, measuringNodeId, characteristic and
 value.
 
-### Transform dataset to dataframe and pivot the indicators as colums for key: managedObjectId, _time, measuringNodeId
+### Transform dataset to dataframe and pivot the indicators
 
 As this dataset is loaded into a dataframe, we can easily pivot the data to have all
 characteristics in one line, based on the key fields: `_time`, `managedObjectId`, `measuringNodeId`.
@@ -223,9 +223,9 @@ After each iteration we'll wait for some time before checking the status again.
 
 This step is stopped by the user or when all uploads are done or failed.
 
-## Troube Shooting
+## Troubleshooting
 
-Please refer to the general guide for [troubeshooting](troubleshooting.md)
+Please refer to the general guide for [troubleshooting](troubleshooting.md)
 
 ## List of Endpoints
 
