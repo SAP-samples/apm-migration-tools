@@ -1,10 +1,28 @@
 # standard modules
 import json
+import enum
 import pandas as pd
+from typing import List
 
 # sqlalchemy imports
-from sqlalchemy import create_engine, Column, Integer, String, select, func
-from sqlalchemy.orm import sessionmaker, declarative_base
+from sqlalchemy import (
+    create_engine,
+    Column,
+    Integer,
+    String,
+    Enum,
+    select,
+    func,
+    ForeignKey,
+)
+from sqlalchemy.orm import (
+    sessionmaker,
+    declarative_base,
+    relationship,
+    Mapped,
+    mapped_column,
+)
+
 from sqlalchemy.schema import PrimaryKeyConstraint
 from sqlalchemy.sql import text, case, literal_column
 
@@ -90,17 +108,36 @@ class SQLAlchemyClient:
             SQLAlchemyClient.create_or_replace_view(self.engine, view)
             self.log.debug(f"[DB] View Created: {view.__tablename__}")
 
+    def table_drop_one(self, model) -> None:
+        """
+        Drops a single table from the database.
+        Args:
+            model (Base): The SQLAlchemy model class to drop.
+        Returns:
+            None
+        """
+        Base.metadata.drop_all(self.engine, tables=[model.__table__])
+        self.log.warning(f"[DB] TABLE DROPPED: {model.__tablename__}")
+
     def table_drop_all(self) -> None:
         Base.metadata.drop_all(self.engine)
         for view in self.views:
             SQLAlchemyClient.drop_view(self.engine, view)
 
-    def truncate(self, model) -> None:
+    def truncate(self, model, synchronize_session=False) -> None:
         with self.Session() as session:
             query = session.query(model).filter(model.tenantid == self.tenantid)
-            rows = query.delete(synchronize_session=False)
+            rows = query.delete(synchronize_session=synchronize_session)
             self.log.warning(f"[DB] TRUNCATE {model.__tablename__}: {rows}")
             session.commit()
+
+    def insert_one(self, obj, commit=True) -> None:
+        self.log.info(f"[DB] INSERT {obj.__tablename__}: 1")
+        obj.tenantid = self.tenantid
+        with self.Session() as session:
+            session.add(obj)
+            if commit:
+                session.commit()
 
     def insert_batches(self, data) -> None:
         self.log.info(f"[DB] INSERT {data[0].__tablename__}: {len(data)}")
@@ -109,6 +146,14 @@ class SQLAlchemyClient:
         with self.Session() as session:
             session.bulk_save_objects(data)
             session.commit()
+
+    def update_one(self, model, where, values, commit=True) -> None:
+        with self.Session() as session:
+            query = session.query(model).filter(model.tenantid == self.tenantid)
+            query = query.filter(*where)
+            query.update(values, synchronize_session=False)
+            if commit:
+                session.commit()
 
     def count(self, model) -> str:
         with self.Session() as session:
@@ -119,6 +164,41 @@ class SQLAlchemyClient:
             column.name: getattr(obj, column.name) for column in obj.__table__.columns
         }
 
+    def select_count(self, model, where=None) -> int:
+        """
+        Selects and counts the number of records in the database for a given model.
+
+        Args:
+            model (Base): The SQLAlchemy model class to query.
+            where (list, optional): A list of additional filter conditions to apply to the query. Defaults to None.
+
+        Returns:
+            int: The count of records that match the query conditions.
+        """
+
+        with self.Session() as session:
+            query = session.query(model)
+            query = query.filter(model.tenantid == self.tenantid)
+            if where is not None:
+                query = query.filter(*where)
+            return query.count()
+
+    def select_one(
+        self,
+        model,
+        fields: list = [],
+        distinct: bool = False,
+        where=None,
+        orderby: list = [],
+        return_dict=True,
+    ):
+        res = self.select(model, fields, distinct, where, orderby, return_dict, limit=1)
+
+        if res:
+            return res[0]
+        else:
+            return None
+
     def select(
         self,
         model,
@@ -126,7 +206,9 @@ class SQLAlchemyClient:
         distinct: bool = False,
         where=None,
         orderby: list = [],
-    ) -> dict:
+        return_dict: bool = True,
+        limit: int = None,
+    ):
         """
         Select records from the model class (table)
 
@@ -152,22 +234,28 @@ class SQLAlchemyClient:
             if where is not None:
                 query = query.filter(*where)
 
+            if limit is not None:
+                query = query.limit(limit)
+
             if orderby:
                 query = query.order_by(*(getattr(model, field) for field in orderby))
 
-            if distinct == True:
+            if distinct is True:
                 query = query.distinct()
 
             self.log.debug(query.statement)
             data = query.all()
 
-            if fields:
-                results = [dict(zip(fields, row)) for row in data]
-            else:
-                results = [self.__to_dict(row) for row in data]
+            if return_dict is True:
+                if fields:
+                    results = [dict(zip(fields, row)) for row in data]
+                else:
+                    results = [self.__to_dict(row) for row in data]
 
-            self.log.info(f"[DB] SELECT {model.__tablename__}: {len(results)}")
-            return results
+                self.log.info(f"[DB] SELECT {model.__tablename__}: {len(results)}")
+                return results
+            else:
+                return data
 
     @staticmethod
     def convert_lists_to_strings(row):
@@ -261,6 +349,77 @@ class ExternalData_FLOC(Base):
     systemName = Column(String)
     externalObjectTypeCode = Column(String)
     externalIdUrl = Column(String)  # Assuming externalIdUrl should remain as Float
+
+
+class EIotMapping(Base):
+    """
+    Mainly to save the managedObjectId for each TO in order to avoid
+    API calls.
+    """
+
+    __tablename__ = "T_EIOT_MAPPING"
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    # id = Column(Integer, primary_key=True, autoincrement=True)
+    managedObjectId = Column(String)
+    tenantid = Column(String)
+    SSID = Column(String)
+    type = Column(String)
+    number = Column(String)
+    acfId = Column(String)
+    modelId = Column(String)
+    indicators = relationship("EIotMappingIndicators", back_populates="parent")
+    # indicators: Mapped[List["EIotMappingIndicators"]] = relationship(
+    #     "EIotMappingIndicators"
+    # )
+
+
+class EIotMappingIndicators(Base):
+    """
+    Save the measuring node id for each TO in order to avoid API calls.
+    """
+
+    __tablename__ = "T_EIOT_MAPPING_INDICATORS"
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    # id = Column(Integer, primary_key=True, autoincrement=True)
+    indicatorIdAcf = Column(String)
+    indicatorIdApm = Column(String)
+    tenantid = Column(String)
+    categoryName = Column(String)
+    characteristicsInternalId = Column(String)
+    positionDetailsId = Column(String)
+    dataType = Column(String)
+    unitOfMeasure = Column(String)
+    charcLength = Column(Integer)
+    charcDecimals = Column(Integer)
+    measuringNodeId = Column(String)
+    technicalGroupId = Column(String)
+    parent_id: Mapped[int] = mapped_column(ForeignKey("T_EIOT_MAPPING.id"))
+    parent: Mapped["EIotMapping"] = relationship("EIotMapping")
+
+
+class EIotUploadStatusValues(enum.Enum):
+    UPLOADED = 1
+    RECEIVED = 2
+    IN_PROCESS = 3
+    SCANNED = 4
+    PROCESSED = 5
+    FAILURE = 9
+
+
+class EIotUploadStatus(Base):
+    """
+    Save the status of the upload for each combined Indicator Group.
+    """
+
+    __tablename__ = "T_EIOT_UPLOAD_STATUS"
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    # id = Column(Integer, primary_key=True, autoincrement=True)
+    tenantid = Column(String)
+    fileName = Column(String)
+    fileId = Column(String)
+    status = Column(Enum(EIotUploadStatusValues))
+    statusDescription = Column(String)
+    statusTimestamp = Column(String)
 
 
 class APM_IndicatorPositions(Base):

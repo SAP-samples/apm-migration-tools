@@ -2,6 +2,7 @@ import logging
 import os
 from datetime import datetime, timedelta
 import pandas as pd
+import pyarrow as pa
 import numpy as np
 from modules.util.config import get_config_by_id
 
@@ -14,24 +15,30 @@ def generate_yearly_slices(start_date_param, end_date_param):
 
     slices = []
 
-    # Adjust the first interval if the start date is not January 1st
-    if start_date_formated.month != 1 or start_date_formated.day != 1:
-        first_end_date = datetime(start_date_formated.year, 12, 31)
-        slices.append((start_date_formated, first_end_date))
-        start_date_formated = first_end_date + timedelta(days=1)
+    if start_date_formated.year == end_date_formated.year:
+        start_date = datetime(start_date_formated.year, 10, 1)
+        end_date = datetime(end_date_formated.year, 11, 30)
+        slices.append((start_date, end_date))
 
-    # Adjust the last interval if the end date is not December 31st
-    if end_date_formated.month != 12 or end_date_formated.day != 31:
-        last_start_date = datetime(end_date_formated.year, 1, 1)
-        slices.append((last_start_date, end_date_formated))
-        end_date_formated = last_start_date - timedelta(days=1)
+    else:
+        # Adjust the first interval if the start date is not January 1st
+        if start_date_formated.month != 1 or start_date_formated.day != 1:
+            first_end_date = datetime(start_date_formated.year, 12, 31)
+            slices.append((start_date_formated, first_end_date))
+            start_date_formated = first_end_date + timedelta(days=1)
 
-    # Generate full year intervals
-    current_start_date = start_date_formated
-    while current_start_date <= end_date_formated:
-        current_end_date = datetime(current_start_date.year, 12, 31)
-        slices.append((current_start_date, current_end_date))
-        current_start_date = datetime(current_start_date.year + 1, 1, 1)
+        # Adjust the last interval if the end date is not December 31st
+        if end_date_formated.month != 12 or end_date_formated.day != 31:
+            last_start_date = datetime(end_date_formated.year, 1, 1)
+            slices.append((last_start_date, end_date_formated))
+            end_date_formated = last_start_date - timedelta(days=1)
+
+        # Generate full year intervals
+        current_start_date = start_date_formated
+        while current_start_date <= end_date_formated:
+            current_end_date = datetime(current_start_date.year, 12, 31)
+            slices.append((current_start_date, current_end_date))
+            current_start_date = datetime(current_start_date.year + 1, 1, 1)
 
     return slices
 
@@ -82,6 +89,21 @@ def explode_normalize(data: pd.DataFrame, id: list, id_explode: str, sep: str = 
     # step 3: concatenate the IDs and normalized data into a single data frame
     df_final = pd.concat([df_explode[id], df_normal], axis=1)
     return df_final
+
+
+def convert_unix_to_iso(time: int) -> str:
+    """
+    Converts Unix timestamp in milliseconds to ISO format
+
+    Parameters:
+        unix_time(int): Unix timestamp
+    Returns:
+        str: ISO formatted date -> 2024-08-01T00:01:00.010Z
+    """
+    return (
+        datetime.utcfromtimestamp(time / 1000).strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3]
+        + "Z"
+    )
 
 
 # ------------------------------------------------------------------------------------ #
@@ -155,3 +177,57 @@ class Logger:
 
         for handler in logger.handlers:
             handler.setFormatter(logging.Formatter(Logger._format))
+
+
+def get_parquet_schema(
+    df: pd.DataFrame, indicator_mapping: dict, log: Logger
+) -> pa.Schema:
+    """
+    Generates a schema from a dataframe
+
+    Parameters:
+        data(pandas.DataFrame): Dataframe for which schema needs to be generated
+    Returns:
+        pyarrow.Schema: Schema generated from the dataframe
+    """
+
+    # schema = pa.Schema.from_pandas(data)
+    res_schema = pa.schema([])
+    res_schema = res_schema.append(pa.field("managedObjectId", pa.string()))
+    res_schema = res_schema.append(pa.field("measuringNodeId", pa.string()))
+    res_schema = res_schema.append(pa.field("_time", pa.timestamp("ms")))
+
+    for column in df.columns:
+        if column in res_schema.names:
+            continue
+        for char_details in indicator_mapping.values():
+            if char_details is None:
+                continue
+            if column == f"C_{char_details.characteristicsInternalId}":
+                if column in res_schema.names:
+                    continue
+                if char_details.dataType == "NUM":
+                    res_schema = res_schema.append(pa.field(column, pa.float64()))
+
+                    # if char_details.charcDecimals == 0:
+                    #     # res_schema = res_schema.append(pa.field(column, pa.int64()))
+                    #     res_schema = res_schema.append(pa.field(column, pa.float64()))
+                    #     # convert float values to int64
+                    #     df[column] = (
+                    #         df[column]
+                    #         .apply(
+                    #             lambda x: (
+                    #                 int(x) if pd.notna(x) and np.isfinite(x) else x
+                    #             )
+                    #         )
+                    #         .astype("Int64")
+                    #     )
+                    # else:
+                    #     res_schema = res_schema.append(pa.field(column, pa.float64()))
+                elif char_details.dataType == "DATE":
+                    df[column] = df[column].astype("datetime64[ms]")
+                    res_schema = res_schema.append(pa.field(column, pa.date64()))
+                else:
+                    log.error(f"Unknown data type {char_details.dataType}")
+
+    return res_schema
