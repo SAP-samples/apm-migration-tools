@@ -1,0 +1,64 @@
+indicators:
+  transform:
+    udr_columns:
+      tenantid: "Tenant ID"
+      internalId: "Internal ID"
+      type: "Type"
+      name: "Name"
+      externalId: "External ID"
+      objectType: "External Type"
+      indicatorGroups_internalId: "Indicator Group"
+      indicatorGroups_description_short: "Indicator Group Desc."
+      propose_APMIndicatorPosition: "Proposed: APM Indicator Position"
+      input_APMIndicatorPosition: "Input: APM Indicator Position"
+      indicators_internalId: "Indicator"
+      indicators_description_short: "Indicators Desc."
+      indicators_dataType: "Datatype"
+      indicators_scale: "Scale"
+      indicators_precision: "Precision"
+      propose_ERPCharacteristic: "Proposed: ERP Characteristic"
+      input_ERPCharacteristic: "Input: ERP Characteristic"
+      propose_APMIndicatorCategory: "Proposed: APM Indicator Category"
+      input_APMIndicatorCategory: "Input: APM Indicator Category"
+      comments: "Comments"
+      id: "REF_GUID"
+      templateId: "REF_TEMPLATE_GUID"
+      indicatorGroups_id: "REF_INDICATOR_GROUP_GUID"
+      indicators_id: "REF_INDICATOR_GUID"
+
+    characteristic:
+      # ERP rules for characteristic datatypes
+      erp_mapping:
+        numeric:
+          datatype: "NUM"
+          length: 10
+          decimals: 0
+          negative: true
+        numericflexible:
+          datatype: "NUM"
+          length: 10
+          decimals: 2
+          negative: true
+        date:
+          datatype: "DATE"
+        boolean:
+          datatype: "CHAR"
+          length: 1
+          decimals: 0
+          negative: false
+        string:
+          datatype: "CHAR"
+          length: 30
+          decimals: 0
+          case_sensitive: true
+
+  load:
+    mandatory_cols:
+      - technicalObject_number
+      - technicalObject_SSID
+      - technicalObject_type
+      - category_SSID
+      - category_name
+      - characteristics_SSID
+      - characteristics_characteristicsInternalId
+      - positionDetails_ID
