@@ -17,6 +17,7 @@ ViewBase = declarative_base(name="ViewBase")
 
 
 class SQLAlchemyClient:
+
     """
     Database Manager to handle all operations related to the database
     Raises:
@@ -24,6 +25,7 @@ class SQLAlchemyClient:
     """
 
     def __init__(self, config_id: str):
+
         """
         Initializes the database connection using the provided configuration ID.
         Args:
@@ -39,6 +41,7 @@ class SQLAlchemyClient:
             Session (sessionmaker): The sessionmaker bound to the engine.
             drop_reload (bool): Flag indicating whether to drop and reload the database.
         """
+
         self.config = get_config_by_id(config_id)
         if self.config is None:
             raise ValueError(f"{config_id} configuration not loaded (or) not found")
@@ -64,6 +67,7 @@ class SQLAlchemyClient:
         self.Session = sessionmaker(bind=self.engine)
 
     def get_database_url(self) -> str:
+
         """
         Retrieves the database URL as a string.
         Returns:
@@ -73,6 +77,7 @@ class SQLAlchemyClient:
         return str(self.__database_url)
 
     def table_create_all(self) -> None:
+
         """
         Creates all tables and views defined in the SQLAlchemy metadata.
         This method uses the SQLAlchemy `create_all` function to create all tables
@@ -80,6 +85,7 @@ class SQLAlchemyClient:
         Returns:
             None
         """
+
         Base.metadata.create_all(self.engine)
         tables = Base.metadata.tables.keys()
 
@@ -91,11 +97,35 @@ class SQLAlchemyClient:
             self.log.debug(f"[DB] View Created: {view.__tablename__}")
 
     def table_drop_all(self) -> None:
+
+        """
+        Drops all tables and views from the database.
+        This method drops all tables defined in the SQLAlchemy Base metadata
+        and then drops all views listed in the `self.views` attribute.
+        Returns:
+            None
+        """
+
         Base.metadata.drop_all(self.engine)
         for view in self.views:
             SQLAlchemyClient.drop_view(self.engine, view)
 
     def truncate(self, model) -> None:
+
+        """
+        Truncate all rows in the specified model table for the current tenant.
+        Args:
+            model: The SQLAlchemy model class representing the table to truncate.
+        Returns:
+            None
+        Steps:
+            Deletes all rows in the specified model table for the current tenant.
+            Logs the number of rows deleted.
+            Commits the transaction to the database.
+        Raises:
+            SQLAlchemyError: If an error occurs during the database operation.
+        """
+
         with self.Session() as session:
             query = session.query(model).filter(model.tenantid == self.tenantid)
             rows = query.delete(synchronize_session=False)
@@ -103,6 +133,20 @@ class SQLAlchemyClient:
             session.commit()
 
     def insert_batches(self, data) -> None:
+
+        """
+        Insert a batch of data objects into the database.
+        This method takes a list of data objects, sets their tenant ID to the
+        current instance's tenant ID, and inserts them into the database in bulk.
+        Args:
+            data (list): A list of data objects to be inserted. Each object must
+                         have a `__tablename__` attribute and a `tenantid` attribute.
+        Returns:
+            None
+        Logs:
+            Logs the table name and the number of objects being inserted.
+        """
+
         self.log.info(f"[DB] INSERT {data[0].__tablename__}: {len(data)}")
         for obj in data:
             obj.tenantid = self.tenantid
@@ -111,10 +155,28 @@ class SQLAlchemyClient:
             session.commit()
 
     def count(self, model) -> str:
+
+        """
+        Count the number of records in the database for a given model.
+        Args:
+            model: The SQLAlchemy model class for which the count of records is to be retrieved.
+        Returns:
+            str: The count of records as a string.
+        """
+
         with self.Session() as session:
             return str(session.query(model).count())
 
     def __to_dict(self, obj) -> dict:
+
+        """
+        Convert a SQLAlchemy ORM object to a dictionary.
+        Args:
+            obj: The SQLAlchemy ORM object to be converted.
+        Returns:
+            dict: A dictionary representation of the ORM object, where the keys are column names and the values are the corresponding attribute values of the object.
+        """
+
         return {
             column.name: getattr(obj, column.name) for column in obj.__table__.columns
         }
@@ -127,6 +189,7 @@ class SQLAlchemyClient:
         where=None,
         orderby: list = [],
     ) -> dict:
+
         """
         Select records from the model class (table)
 
@@ -139,6 +202,7 @@ class SQLAlchemyClient:
         Returns:
             dict: A dictionary with the list of values and headers of the table. Can be used to load into a pandas dataframe.
         """
+
         with self.Session() as session:
             results = []
             query = session.query(model)
@@ -171,9 +235,11 @@ class SQLAlchemyClient:
 
     @staticmethod
     def convert_lists_to_strings(row):
+
         """
         Defines a static method to convert lists to strings
         """
+
         for key, value in row.items():
             if isinstance(value, list):
                 if not value:
@@ -184,6 +250,16 @@ class SQLAlchemyClient:
 
     @staticmethod
     def dataframe_to_object(df: pd.DataFrame, model) -> list:
+
+        """
+        Converts a pandas DataFrame into a list of model instances.
+        Args:
+            df (pd.DataFrame): The DataFrame containing the data to be converted.
+            model (Type): The model class to instantiate with the DataFrame rows.
+        Returns:
+            list: A list of model instances created from the DataFrame rows.
+        """
+
         instances = []
         for _, row in df.iterrows():
             row_data = row.to_dict()
@@ -193,6 +269,27 @@ class SQLAlchemyClient:
 
     @staticmethod
     def create_or_replace_view(engine, model):
+
+        """
+        Create or replace a SQL view based on the provided SQLAlchemy model.
+        This function generates a SQL statement to create or replace a view using the
+        definition provided in the SQLAlchemy model. It supports SQLite, PostgreSQL,
+        and SAP HANA databases. For other databases, it defaults to creating a view.
+        Args:
+            engine (sqlalchemy.engine.Engine): The SQLAlchemy engine connected to the database.
+            model (sqlalchemy.ext.declarative.api.DeclarativeMeta): The SQLAlchemy model containing
+                the table definition and view name.
+        Raises:
+            sqlalchemy.exc.SQLAlchemyError: If there is an error executing the SQL statement.
+        Example:
+            class MyModel(Base):
+                __tablename__ = 'my_view'
+                __definition__ = select([table1.c.column1, table2.c.column2]).select_from(
+                    table1.join(table2, table1.c.id == table2.c.id)
+            engine = create_engine('sqlite:///mydatabase.db')
+            create_or_replace_view(engine, MyModel)
+        """
+
         view_name = model.__tablename__
 
         sql_statement = model.__definition__.compile(
@@ -219,6 +316,20 @@ class SQLAlchemyClient:
 
     @staticmethod
     def drop_view(engine, model):
+
+        """
+        Drops a database view if it exists.
+        Parameters:
+        engine (sqlalchemy.engine.Engine): The SQLAlchemy engine connected to the database.
+        model (sqlalchemy.ext.declarative.api.DeclarativeMeta): The SQLAlchemy model representing the view to be dropped.
+        The function checks the dialect of the database engine and executes the appropriate SQL command to drop the view.
+        - For SQLite and PostgreSQL, it uses "DROP VIEW IF EXISTS".
+        - For HANA, it uses "DROP VIEW".
+        - For other databases, it defaults to "DROP VIEW".
+        Note:
+        - Ensure that the model has a `__tablename__` attribute that specifies the name of the view.
+        """
+
         with engine.connect() as connection:
             if engine.dialect.name == "sqlite":
                 connection.execute(text(f"DROP VIEW IF EXISTS {model.__tablename__}"))
@@ -231,7 +342,7 @@ class SQLAlchemyClient:
 
 
 # ---------------------------------------------------------------------------------------------------------------------------- #
-# Tables
+# Models: Tables
 # ---------------------------------------------------------------------------------------------------------------------------- #
 
 
@@ -800,7 +911,7 @@ class PostLoadIndicators(Base):
 
 
 # ---------------------------------------------------------------------------------------------------------------------------- #
-# Views
+# Models: View
 # ---------------------------------------------------------------------------------------------------------------------------- #
 
 
@@ -1250,82 +1361,3 @@ class V_PostLoad_Indicators(ViewBase):
             ),
         )
     )
-
-
-# class V_Load_Indicators(ViewBase):
-#     __tablename__ = "V_LOAD_INDICATORS"
-
-#     tenantid = Column(String)
-#     technicalObject_number = Column(String)
-#     technicalObject_type = Column(String)
-#     category_name = Column(String)
-#     characteristics_characteristicsInternalId = Column(String)
-#     positionDetails_ID = Column(String)
-#     category_SSID = Column(String)
-#     characteristics_SSID = Column(String)
-#     valid = Column(String)
-
-#     __table_args__ = (
-#         PrimaryKeyConstraint(
-#             "tenantid",
-#             "technicalObject_number",
-#             "technicalObject_type",
-#             "category_name",
-#             "characteristics_characteristicsInternalId",
-#             "positionDetails_ID",
-#             "category_SSID",
-#             "characteristics_SSID",
-#         ),
-#     )
-
-#     __definition__ = (
-#         select(
-#             V_Transform_Indicators.tenantid,
-#             V_Transform_Indicators.internalId.label("technicalObject_number"),
-#             case(
-#                 (V_Transform_Indicators.objectType == "EQU", "EQUI"),
-#                 (V_Transform_Indicators.objectType == "FLOC", "FL"),
-#                 else_=None,
-#             ).label("technicalObject_type"),
-#             T_UDR_Indicators.APMIndicatorCategory.label("category_name"),
-#             V_ERPCharacteristics.CharcInternalID.label(
-#                 "characteristics_characteristicsInternalId"
-#             ),
-#             V_APMIndicatorPositions.apm_guid.label("positionDetails_ID"),
-#             V_APMIndicatorPositions.ssid.label("category_SSID"),
-#             V_APMIndicatorPositions.ssid.label("characteristics_SSID"),
-#             case(
-#                 (
-#                     or_(
-#                         func.trim(T_UDR_Indicators.APMIndicatorCategory).is_(None),
-#                         func.trim(T_UDR_Indicators.APMIndicatorCategory) == "",
-#                     ),
-#                     None,
-#                 ),
-#                 else_="X",
-#             ).label("valid"),
-#         )
-#         .select_from(V_Transform_Indicators)
-#         .join(
-#             T_UDR_Indicators,
-#             (T_UDR_Indicators.tenantid == V_Transform_Indicators.tenantid)
-#             & (T_UDR_Indicators.internalId == V_Transform_Indicators.internalId)
-#             & (T_UDR_Indicators.id == V_Transform_Indicators.id),
-#         )
-#         .join(
-#             V_ERPCharacteristics,
-#             (V_ERPCharacteristics.tenantid == V_Transform_Indicators.tenantid)
-#             & (
-#                 V_ERPCharacteristics.ERPCharacteristic
-#                 == T_UDR_Indicators.ERPCharacteristic
-#             ),
-#         )
-#         .join(
-#             V_APMIndicatorPositions,
-#             (V_APMIndicatorPositions.tenantid == V_Transform_Indicators.tenantid)
-#             & (
-#                 V_APMIndicatorPositions.APMIndicatorPosition
-#                 == T_UDR_Indicators.APMIndicatorPosition
-#             ),
-#         )
-#     )
