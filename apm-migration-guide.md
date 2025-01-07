@@ -170,10 +170,10 @@ This comparison only shows differences. All features that are available across a
 |-------     |-----|------|----------|----------|
 | Data Model | Asset Central Foundation | ACF | ERP | ERP |
 | Multi Backend | Yes | Yes | No | No |
-|ECC Version|||||
-|S/4 Version|||||
+|ECC Version|SAP ERP: ECC 6 EHP7 SP14|SAP ERP: ECC 6 EHP7 SP14|SAP ERP: ECC 6 EHP7 SP14||
+|S/4 Version|SAP S/4HANA: 1610 FPS01|SAP S/4HANA: 1610 FPS01|SAP S/4HANA 2020 and higher, SAP S/4HANA Cloud||
 |Productive Service Plan|No|No|No|Yes|
-|Datacenter|eu10,eu20,us10,us20|eu10,eu20,us10,us20|eu10,eu20,us10,us20|eu20,us20|
+|Region|eu10,eu20,us10,us20|eu10,eu20,us10,us20|eu10,eu20,us10,us20|eu20,us20|
 |Standalone capable|Yes|Yes|No|No|
 |Model Concept|Yes|Yes|No|No|
 |Indicator Groups|Yes|Yes|No|?|
@@ -181,9 +181,9 @@ This comparison only shows differences. All features that are available across a
 |Navigation to ERP|||||
 |Navigation from ERP|||||
 |Checklists|No|Yes|No|No|
+|Embedded SAC|Yes|Yes|Yes|Planned|
 |Risk Based Inspections|No|Partner|Partner|Partner|
 |Anomaly Detection|Yes|n/a|Yes|Planned|
-|Embedded SAC|Yes|Yes|Yes|Planned|
 |Custom ML Models|Yes|n/a|Yes|?|
 |Streaming Rules|Yes|n/a|Yes|Planned|
 |Scheduled Rules|Yes|n/a|Yes|Yes|
@@ -208,7 +208,24 @@ The data model used by APM is based directly on the concepts known from EAM in S
 With former products hooking up one tenant to multiple ERPs was possible. With APM this is not possible anymore.
 If you have multiple ERPs you need to license additional test or production tenants from SAP for each.
 
-...
+## ECC or S/4 Version
+
+For more details see this page: https://help.sap.com/docs/SAP_APM/e260612a886a4e0f8d2e6bed2a648c5d/8b5cdbec76e54b049b3737a95015fcf0.html?locale=en-US.
+
+## Productive Service Plan
+
+It was always possible to flag a subaccount as "productive" or not.
+Only with the APM eiot license and the associated entitlement you get access to the plan "productive" which is the one that will be metered continously by SAP.
+
+## Region
+
+Generally SAP could make APM eiot available on other hyperscalers other then Azure down the road but its is not planned in 2025.
+If SAP does so it will anounce this in the roadmap ahead of time and it will be equal in scope and capabilities on any region offered.
+
+## Standalone
+
+With the shift from PAI and ASPM to APM standalone is not possible anymore.
+An ERP system from SAP with EAM configured and running is always required as the basis for APM.
 
 
 # Planned Improvements to this Guide
