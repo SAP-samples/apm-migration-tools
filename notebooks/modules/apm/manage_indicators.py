@@ -1,25 +1,47 @@
+# standard imports
 import requests
+
+# custom imports
 from modules.util.api import APMClient, APIException
 from modules.util.helpers import Logger
 
+"""
+SAP API Documentation: https://api.sap.com/api/Indicator_Related_APIs/resource/Indicator_Positions
+"""
+
 
 class ApiIndicatorPosition:
+
     """
-    SAP API Documentation: https://api.sap.com/api/Indicator_Related_APIs/resource/Indicator_Positions
+    A class to manage indicator positions using the APM system's API.
+    Methods:
+    __init__(config_id: str)
+        Initializes the class object with necessary variables and utility module objects.
+    get_indicator_positions()
+        Retrieves a list of indicator positions from the system.
+    get_indicator_positions_count() -> int
+        Retrieves the count of indicator positions from the system.
+    create_indicator_position(name: str)
+        Creates a new indicator position in the APM system.
+    get_indicator_position_name(name: str) -> dict
     """
 
     def __init__(self, config_id: str):
+
         """
         Initializes the class object with necessary variables and utility module objects
         """
+
         self.api_client = APMClient(config_id=config_id, service="IndicatorService")
         self.endpoint = f"{self.api_client.base_url}"
         self.log = Logger.get_logger(config_id)
 
     def get_indicator_positions(self):
+
         """
         Get list of indicators positions from the system
         """
+
         headers = {
             "Authorization": f"Bearer {self.api_client.get_token()}",
             "Content-Type": "application/json",
@@ -48,9 +70,11 @@ class ApiIndicatorPosition:
         return response
 
     def get_indicator_positions_count(self) -> int:
+
         """
         Get count of indicators positions from the system
         """
+
         headers = {
             "Authorization": f"Bearer {self.api_client.get_token()}",
             "Content-Type": "application/json",
@@ -65,6 +89,7 @@ class ApiIndicatorPosition:
         return int(response.text)
 
     def create_indicator_position(self, name: str):
+
         """
         Method to create Indicator Positions in the APM system
 
@@ -104,6 +129,7 @@ class ApiIndicatorPosition:
         return response
 
     def get_indicator_position_name(self, name: str) -> dict:
+
         """
         Retrieves the position details of an indicator by its name.
         Args:
@@ -140,15 +166,36 @@ class ApiIndicatorPosition:
         return {}
 
 
+"""
+SAP API Documentation: https://api.sap.com/api/Indicator_Related_APIs/resource/Indicators
+"""
+
+
 class ApiIndicators:
+
     """
-    SAP API Documentation: https://api.sap.com/api/Indicator_Related_APIs/resource/Indicators
+    A class to manage API interactions related to indicators.
+    Attributes:
+        api_client (APMClient): The API client for making requests.
+        endpoint (str): The endpoint URL for the IndicatorService.
+        headers (dict): The headers to be used in API requests.
+    Methods:
+        __init__(config_id: str):
+            Initializes the class with the given configuration ID.
+        create_indicator(row: dict) -> dict:
+            Creates a new indicator using the provided row data.
+        search_indicator(
+            characteristics_SSID: str
+        ) -> dict:
+            Searches for an indicator based on the provided parameters.
     """
 
     def __init__(self, config_id: str):
+
         """
         Initializes the class object with necessary variables and utility module objects
         """
+
         self.api_client = APMClient(config_id=config_id, service="IndicatorService")
         self.endpoint = f"{self.api_client.base_url}/Indicators"
         self.headers = {
@@ -158,6 +205,24 @@ class ApiIndicators:
         }
 
     def create_indicator(self, row):
+
+        """
+        Creates an indicator using the provided row data.
+        Args:
+            row (dict): A dictionary containing the following keys:
+                - technicalObject_number (str): The technical object number.
+                - technicalObject_SSID (str): The technical object SSID.
+                - technicalObject_type (str): The technical object type.
+                - category_SSID (str): The category SSID.
+                - category_name (str): The category name.
+                - characteristics_SSID (str): The characteristics SSID.
+                - characteristics_characteristicsInternalId (str): The characteristics internal ID.
+                - positionDetails_ID (str): The position details ID.
+        Returns:
+            dict: The JSON response from the API if the indicator is created successfully.
+        Raises:
+            APIException: If the API response status code is not 201.
+        """
 
         body = {
             "technicalObject_number": row.get("technicalObject_number"),
@@ -195,6 +260,24 @@ class ApiIndicators:
         positionDetails_ID: str,
         characteristics_SSID: str,
     ):
+
+        """
+        Searches for an indicator based on the provided parameters.
+        Args:
+            technicalObject_number (str): The number of the technical object.
+            technicalObject_type (str): The type of the technical object.
+            technicalObject_SSID (str): The SSID of the technical object.
+            category_name (str): The name of the category.
+            category_SSID (str): The SSID of the category.
+            characteristics_characteristicsInternalId (str): The internal ID of the characteristics.
+            positionDetails_ID (str): The ID of the position details.
+            characteristics_SSID (str): The SSID of the characteristics.
+        Returns:
+            dict: The JSON response from the API containing the search results.
+        Raises:
+            APIException: If the API request fails with a status code other than 200.
+        """
+
         params = {
             "$filter": f"technicalObject_number eq '{technicalObject_number}' and technicalObject_type eq '{technicalObject_type}' and technicalObject_SSID eq '{technicalObject_SSID}' and category_name eq '{category_name}' and category_SSID eq '{category_SSID}' and characteristics_characteristicsInternalId eq '{characteristics_characteristicsInternalId}' and positionDetails_ID eq '{positionDetails_ID}' and characteristics_SSID eq '{characteristics_SSID}'"
         }
@@ -212,15 +295,32 @@ class ApiIndicators:
         return res.json()
 
 
+"""
+SAP API Documentation: https://api.sap.com/api/Indicator_Related_APIs/resource/Indicators
+"""
+
+
 class ApiCharacteristics:
+
     """
-    SAP API Documentation: https://api.sap.com/api/Indicator_Related_APIs/resource/Indicators
+    A class to interact with the IndicatorService API for managing characteristics.
+    Attributes:
+        api_client (APMClient): An instance of APMClient configured for the IndicatorService.
+        endpoint (str): The API endpoint for Indicators.
+        headers (dict): The headers required for making API requests.
+    Methods:
+        __init__(config_id: str):
+            Initializes the ApiCharacteristics instance with the given configuration ID.
+        search_characteristic(internalId: str):
+            Searches for a characteristic by its internal ID.
     """
 
     def __init__(self, config_id: str):
+
         """
         Initializes the class object with necessary variables and utility module objects
         """
+
         self.api_client = APMClient(config_id=config_id, service="IndicatorService")
         self.endpoint = f"{self.api_client.base_url}/Indicators"
         self.headers = {
@@ -230,6 +330,17 @@ class ApiCharacteristics:
         }
 
     def search_characteristic(self, internalId: str):
+
+        """
+        Searches for a characteristic by its internal ID.
+        Args:
+            internalId (str): The internal ID of the characteristic to search for.
+        Returns:
+            dict: The JSON response from the API containing the characteristic details.
+        Raises:
+            APIException: If the API request fails with a status code other than 200.
+        """
+
         url = f"{self.api_client.base_url}/Characteristics(SSID='{self.api_client.erp_ssid}',characteristicsInternalId='{internalId}')"
         res = requests.get(
             url=url,

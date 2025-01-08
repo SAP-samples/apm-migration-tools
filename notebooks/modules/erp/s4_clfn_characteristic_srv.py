@@ -8,6 +8,7 @@ from modules.util.helpers import Logger
 
 
 class ApiCharacteristicHeader:
+
     """
     A class to interact with the SAP API_CLFN_CHARACTERISTIC_SRV service.
     Attributes:
@@ -40,6 +41,21 @@ class ApiCharacteristicHeader:
     """
 
     def __init__(self, config_id: str):
+
+        """
+        Initializes the S4ClfnCharacteristicSrv class.
+        Args:
+            config_id (str): The configuration ID used to initialize the ERPClient.
+        Attributes:
+            api_client (ERPClient): An instance of ERPClient initialized with the provided config_id, service, and entity_set.
+            endpoint (str): The endpoint URL of the API client.
+            headers (dict): The headers used in the API client requests.
+            params (dict): The parameters used in the API client requests.
+            log (Logger): A logger instance for logging messages.
+        Notes:
+            If the API client is configured to ignore SSL certificate warnings, these warnings will be disabled.
+        """
+
         service = "API_CLFN_CHARACTERISTIC_SRV"
         entity_set = "A_ClfnCharacteristicForKeyDate"
 
@@ -59,6 +75,18 @@ class ApiCharacteristicHeader:
         self.log = Logger.get_logger(config_id)
 
     def search_characteristic(self, characteristic: str):
+
+        """
+        Searches for a characteristic in the ERP system.
+        Args:
+            characteristic (str): The characteristic to search for.
+        Returns:
+            dict: The first result of the search if found, otherwise None.
+        Raises:
+            APIException: If the API call returns a status code other than 200.
+            Exception: If there is any other issue with the API call.
+        """
+
         params = {}
         params.update(self.params)
 
@@ -100,6 +128,24 @@ class ApiCharacteristicHeader:
         negative_flag=False,
         case_sensitive_flag=False,
     ):
+
+        """
+        Creates a characteristic in the ERP system.
+        Args:
+            char (str): The name of the characteristic.
+            datatype (str): The data type of the characteristic.
+            description (str): The description of the characteristic.
+            length (int, optional): The length of the characteristic. Defaults to None.
+            decimals (int, optional): The number of decimal places for the characteristic. Defaults to None.
+            negative_flag (bool, optional): Flag indicating if negative values are allowed. Defaults to False.
+            case_sensitive_flag (bool, optional): Flag indicating if the characteristic is case sensitive. Defaults to False.
+        Returns:
+            dict: The response data from the API call.
+        Raises:
+            APIException: If the API call does not return a status code of 201.
+            Exception: If any other error occurs during the API call.
+        """
+
         params = {}
         params.update(self.params)
         params.pop("$format", None)
@@ -145,6 +191,19 @@ class ApiCharacteristicHeader:
             raise Exception(f"API call failed: {e}")
 
     def delete_characteristic(self, guid: str) -> None:
+
+        """
+        Deletes a characteristic identified by the given GUID.
+        This method sends a DELETE request to the API endpoint to remove the characteristic.
+        It handles CSRF token retrieval and constructs the necessary headers and parameters
+        for the request. If the deletion is unsuccessful, an APIException is raised.
+        Args:
+            guid (str): The GUID of the characteristic to be deleted.
+        Raises:
+            APIException: If the API response status code is not 204 (No Content).
+            Exception: If there is any other exception during the API call.
+        """
+
         params = {}
         params.update(self.params)
         params.pop("$format", None)
