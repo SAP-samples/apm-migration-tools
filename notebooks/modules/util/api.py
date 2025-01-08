@@ -115,6 +115,53 @@ class APIClient(BaseAPIClient):
             x_api_key=self.sys_config.get("credentials", {}).get("x_api_key"),
         )
 
+    def get(
+        self, endpoint: str, params: dict = None, headers: dict = None
+    ) -> requests.Response:
+        _headers = {
+            "Authorization": f"Bearer {super().get_token()}",
+            "Content-Type": "application/json",
+        }
+
+        # add the headers from the function call
+        if headers:
+            _headers.update(headers)
+
+        res = requests.get(
+            url=endpoint, headers=_headers, params=params, timeout=self.timeout
+        )
+        if not res.status_code // 100 == 2:
+            raise APIException(
+                endpoint=endpoint, status_code=res.status_code, response=res.text
+            )
+        else:
+            return res
+
+    def post(
+        self, endpoint: str, params: dict = None, headers: dict = None, files=None
+    ) -> requests.Response:
+        _headers = {
+            "Authorization": f"Bearer {super().get_token()}",
+        }
+
+        # add the headers from the function call
+        if headers:
+            _headers.update(headers)
+
+        res = requests.post(
+            url=endpoint,
+            headers=_headers,
+            params=params,
+            timeout=self.timeout,
+            files=files,
+        )
+        if not res.status_code // 100 == 2:
+            raise APIException(
+                endpoint=endpoint, status_code=res.status_code, response=res.text
+            )
+        else:
+            return res
+
     def get_batches(
         self,
         endpoint: str,
@@ -256,7 +303,7 @@ class APMClient(APIClient):
         """
 
         super().__init__(config_id, "APM")
-        self.base_url = f"{self.base_url}/{service}/v1"
+        self.base_url = f"{self.base_url}{service}"
 
         self.erp_config = get_system_by_type(self.config, "ERP")
         if self.erp_config is None:

@@ -1,0 +1,10 @@
+[MASTER]
+
+max-line-length=120
+
+[MESSAGES CONTROL]
+enable=all
+disable=missing-docstring,missing-function-docstring,too-few-public-methods,import-error, redefined-builtin
+
+[REPORTS]
+output-format=text
