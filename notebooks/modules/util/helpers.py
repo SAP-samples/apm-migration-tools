@@ -1,12 +1,13 @@
+# standard imports
 import logging
 import os
 from datetime import datetime, timedelta
 import pandas as pd
 import pyarrow as pa
 import numpy as np
-from modules.util.config import get_config_by_id
 
-# ------------------------------------------------------------------------------- #
+# custom imports
+from modules.util.config import get_config_by_id
 
 
 def generate_yearly_slices(start_date_param, end_date_param):
@@ -44,6 +45,7 @@ def generate_yearly_slices(start_date_param, end_date_param):
 
 
 def convert_dataframe(df: pd.DataFrame) -> pd.DataFrame:
+
     """
     Converts a dataframe content to string datatype. If there are any blank lists or values,
     they are replaced with NULL during the conversion.
@@ -52,6 +54,7 @@ def convert_dataframe(df: pd.DataFrame) -> pd.DataFrame:
     Returns:
         pandas.DataFrame: converted dataframe
     """
+
     # Replace empty lists with None
     df = df.apply(
         lambda col: col.map(lambda x: None if isinstance(x, list) and not x else x)
@@ -69,6 +72,7 @@ def convert_dataframe(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def explode_normalize(data: pd.DataFrame, id: list, id_explode: str, sep: str = "_"):
+
     """
     Explode and normalize data in a Data Frame
 
@@ -78,6 +82,7 @@ def explode_normalize(data: pd.DataFrame, id: list, id_explode: str, sep: str = 
         id_explode(str): Column ID based on which data needs to be exploded
         sep(str, optional): Seperator based on which the exploded column names are derived. **Defaults to underscore(_)**
     """
+
     # step 1: pick relevant fields from the dataframe (id fields, exploded field) and explode
     df_explode = data[id + [id_explode]]
     df_explode = df_explode.explode(id_explode).reset_index(drop=True)
@@ -105,16 +110,49 @@ def convert_unix_to_iso(time: int) -> str:
         + "Z"
     )
 
-
 # ------------------------------------------------------------------------------------ #
 
-
 class Logger:
+
+    """
+    Logger class provides methods to create and manage loggers with specific configurations.
+    Attributes:
+        _loggers (dict): A dictionary to store loggers by their configuration ID.
+        _format (str): The format string for log messages.
+    Methods:
+        get_logger(config_id: str) -> logging.Logger:
+            Retrieves a logger based on the given configuration ID. If the logger does not exist, it creates one using the configuration.
+        clear_log_file(config_id: str):
+            Clears the log file associated with the given configuration ID.
+        blank_line(logger: logging.Logger, count: int = 1):
+            Inserts a specified number of blank lines into the log.
+    """
+
     _loggers = {}
     _format = "%(asctime)s  [%(levelname).4s]: %(message)s"
 
     @staticmethod
     def get_logger(config_id: str):
+
+        """
+        Retrieves or creates a logger based on the provided configuration ID.
+        If a logger with the specified configuration ID already exists, it is returned.
+        Otherwise, a new logger is created using the configuration associated with the ID.
+        Args:
+            config_id (str): The ID of the configuration to use for the logger.
+        Returns:
+            logging.Logger: The configured logger instance.
+        Raises:
+            ValueError: If no configuration is found for the provided ID or if the log configuration is missing.
+        Configuration:
+            The configuration should include the following keys:
+            - "log": A dictionary with the following keys:
+                - "name" (optional): The name of the logger. Defaults to the config_id if not provided.
+                - "directory": The directory where the log file will be stored.
+                - "level": The logging level (e.g., logging.DEBUG, logging.INFO).
+                - "print": A boolean indicating whether to also print logs to the console.
+        """
+
         if config_id in Logger._loggers:
             return Logger._loggers[config_id]
 
@@ -157,6 +195,17 @@ class Logger:
 
     @staticmethod
     def clear_log_file(config_id: str):
+
+        """
+        Clears the log file associated with the given configuration ID.
+        This function retrieves the logger associated with the provided configuration ID,
+        identifies the log file used by the logger, and clears its contents.
+        Args:
+            config_id (str): The configuration ID used to retrieve the appropriate logger.
+        Raises:
+            StopIteration: If no FileHandler is found in the logger's handlers.
+        """
+
         logger = Logger.get_logger(config_id)
         log_file = next(
             handler.baseFilename
@@ -168,6 +217,15 @@ class Logger:
 
     @staticmethod
     def blank_line(logger, count=1):
+
+        """
+        Inserts blank lines into the logger output.
+        This function temporarily removes the formatter from the logger handlers,
+        logs the specified number of blank lines, and then restores the original formatter.
+        Args:
+            logger (logging.Logger): The logger instance to which blank lines will be added.
+            count (int, optional): The number of blank lines to insert. Defaults to 1.
+        """
 
         for handler in logger.handlers:
             handler.setFormatter(logging.Formatter(""))

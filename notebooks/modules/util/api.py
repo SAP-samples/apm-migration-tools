@@ -1,13 +1,24 @@
-"""Utility module for APIs"""
-
+# standard imports
 import time
 import base64
 from typing import Optional
 import requests
+
+# custom imports
 from modules.util.config import get_config_by_id, get_system_by_type
 
 
 class BaseAPIClient:
+
+    """
+    BaseAPIClient is a class that provides a base implementation for an API client. It handles authentication using client credentials and manages the retrieval and expiration of authentication tokens.
+    Methods:
+        __init__(client_id, client_secret, token_url, base_url, x_api_key=None):
+            Initializes the API client with the given credentials and configuration.
+        get_token():
+            Retrieves an authentication token. If the current token is expired or not set, it authenticates using client credentials and fetches a new token from the token URL.
+    """
+
     def __init__(
         self,
         client_id,
@@ -16,6 +27,7 @@ class BaseAPIClient:
         base_url,
         x_api_key: Optional[str] = None,
     ):
+
         """
         Initialize the API client with the given credentials and configuration.
 
@@ -36,6 +48,7 @@ class BaseAPIClient:
             token (str, optional): The authentication token. Defaults to None.
             token_expiry (int): The expiry time of the authentication token. Defaults to 0.
         """
+
         self.client_id = client_id
         self.client_secret = client_secret
         self.token_url = token_url
@@ -46,6 +59,7 @@ class BaseAPIClient:
         self.timeout = 30
 
     def get_token(self):
+
         """
         Retrieves an authentication token. If the current token is expired or not set,
         it authenticates using client credentials and fetches a new token from the token URL.
@@ -54,6 +68,7 @@ class BaseAPIClient:
         Raises:
             requests.exceptions.RequestException: If the request to the token URL fails.
         """
+
         if self.token_expiry is None or time.time() >= self.token_expiry:
             # Authenticate and get the token
             response = requests.post(
@@ -76,6 +91,16 @@ class BaseAPIClient:
 
 class APIClient(BaseAPIClient):
     def __init__(self, config_id: str, system_type: str):
+
+        """
+        Initializes the API client with the given configuration ID and system type.
+        Args:
+            config_id (str): The ID of the configuration to use.
+            system_type (str): The type of the system to connect to.
+        Raises:
+            ValueError: If the system type is not found in the configuration.
+        """
+
         self.config = get_config_by_id(config_id)
         self.sys_config = get_system_by_type(self.config, system_type)
 
@@ -145,6 +170,20 @@ class APIClient(BaseAPIClient):
         expand: Optional[str] = None,
     ):
 
+        """
+        Retrieve data from an API endpoint in batches.
+        Args:
+            endpoint (str): The API endpoint to retrieve data from.
+            batch_size (int, optional): The number of records to retrieve per batch. Defaults to 100.
+            filter (Optional[str], optional): OData filter query to apply. Defaults to None.
+            expand (Optional[str], optional): OData expand query to apply. Defaults to None.
+        Returns:
+            list: A list of records retrieved from the API.
+        Raises:
+            APIException: If the API response status code is not 200.
+            Exception: If any other error occurs during the API call.
+        """
+
         headers = {
             "Authorization": f"Bearer {super().get_token()}",
             "Content-Type": "application/json",
@@ -203,7 +242,29 @@ class APIClient(BaseAPIClient):
 
 
 class ACFClient(APIClient):
+
+    """
+    A client for interacting with the ACF API.
+    Inherits from:
+        APIClient: A base class for API clients.
+    Attributes:
+        base_url (str): The base URL for the ACF API.
+        erp_config (dict): The ERP system configuration.
+        erp_ssid (str): The ERP system ID and client.
+    Methods:
+        __init__(config_id: str): Initializes the ACFClient with the given configuration ID.
+    """
+
     def __init__(self, config_id: str):
+
+        """
+        Initializes the ACFClient with the given configuration ID.
+        Args:
+            config_id (str): The configuration ID for the ACFClient.
+        Raises:
+            ValueError: If the ERP system is not found in the configuration.
+        """
+
         super().__init__(config_id, "ACF")
         self.base_url = f"{self.base_url}/ain/services/api/v1"
 
@@ -216,7 +277,31 @@ class ACFClient(APIClient):
 
 
 class APMClient(APIClient):
+
+    """
+    A client for interacting with the APM service.
+    Inherits from APIClient and initializes the base URL for the APM service.
+    Attributes:
+        base_url (str): The base URL for the APM service.
+        erp_config (dict): The ERP system configuration.
+        erp_ssid (str): The ERP system ID and client.
+    Methods:
+        __init__(config_id: str, service: str):
+            Initializes the APMClient with the given configuration ID and service.
+            Raises ValueError if the ERP system is not found in the configuration.
+    """
+
     def __init__(self, config_id: str, service: str):
+
+        """
+        Initializes the APMClient with the given configuration ID and service.
+        Args:
+            config_id (str): The configuration ID.
+            service (str): The service name.
+        Raises:
+            ValueError: If the ERP system is not found in the configuration.
+        """
+
         super().__init__(config_id, "APM")
         self.base_url = f"{self.base_url}{service}"
 
@@ -229,7 +314,57 @@ class APMClient(APIClient):
 
 
 class ERPClient:
+
+    """
+    A client for interacting with an ERP system using OData services.
+    Attributes:
+        config (dict): Configuration details for the ERP system.
+        sys_config (dict): System configuration details for the ERP system.
+        host (str): The host URL of the ERP system.
+        user (str): The username for authentication.
+        password (str): The password for authentication.
+        client (str): The client number for the ERP system.
+        ignore_cert (bool): Whether to ignore SSL certificate verification.
+        service (str): The OData service name.
+        entity_set (str): The OData entity set name.
+        timeout (int): The timeout for HTTP requests.
+        endpoint (str): The full endpoint URL for the OData service.
+        headers (dict): The HTTP headers for requests.
+        params (dict): The query parameters for requests.
+    Methods:
+        get_csrf_token():
+            Fetches a CSRF token from the ERP system.
+            Returns:
+                tuple: A tuple containing the CSRF token and cookies.
+            Raises:
+                APIException: If the request fails.
+    """
+
     def __init__(self, config_id: str, service: str, entity_set: str):
+
+        """
+        Initializes the API client with the given configuration ID, service, and entity set.
+        Args:
+            config_id (str): The configuration ID to retrieve the system configuration.
+            service (str): The OData service name.
+            entity_set (str): The OData entity set name.
+        Raises:
+            ValueError: If the ERP system is not found in the configuration.
+        Attributes:
+            config (dict): The configuration dictionary retrieved by the configuration ID.
+            sys_config (dict): The system configuration dictionary for the ERP system.
+            host (str): The host URL of the ERP system.
+            user (str): The username for authentication.
+            password (str): The password for authentication.
+            client (str): The SAP client number.
+            ignore_cert (bool): Whether to ignore SSL certificate validation.
+            service (str): The OData service name.
+            entity_set (str): The OData entity set name.
+            timeout (int): The request timeout in seconds.
+            endpoint (str): The full OData service endpoint URL.
+            headers (dict): The HTTP headers for the request, including authorization.
+            params (dict): The query parameters for the request.
+        """
 
         self.config = get_config_by_id(config_id)
         self.sys_config = get_system_by_type(self.config, "ERP")
@@ -263,10 +398,19 @@ class ERPClient:
 
     def get_csrf_token(self):
 
+        """
+        Fetches a CSRF token from the API endpoint.
+        This method sends a GET request to the specified endpoint with the
+        headers and parameters provided. It expects the server to return a
+        CSRF token in the response headers.
+        Returns:
+            tuple: A tuple containing the CSRF token and cookies from the response.
+        Raises:
+            APIException: If the response status code is not 200.
+        """
+
         headers = {"x-csrf-token": "FETCH"}
-
         headers.update(self.headers)
-
         params = {"$top": 1, "$skip": 0}
         params.update(self.params)
 
@@ -292,6 +436,7 @@ class ERPClient:
 
 # Exception Class for API Errors
 class APIException(Exception):
+
     """
     Exception class for API calls.
     You can use the following attributes of the APIException instance.
@@ -306,6 +451,14 @@ class APIException(Exception):
     """
 
     def __init__(self, endpoint, status_code, response):
+
+        """
+        Initialize the API error with endpoint, status code, and response.
+        Args:
+            endpoint (str): The API endpoint that was called.
+            status_code (int): The HTTP status code returned by the API.
+            response (str): The response message from the API.
+        """
 
         self.endpoint = endpoint
         self.status_code = status_code
