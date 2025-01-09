@@ -303,7 +303,7 @@ class APMClient(APIClient):
         """
 
         super().__init__(config_id, "APM")
-        self.base_url = f"{self.base_url}{service}"
+        self.base_url = f"{self.base_url}/{service}/v1"
 
         self.erp_config = get_system_by_type(self.config, "ERP")
         if self.erp_config is None:
