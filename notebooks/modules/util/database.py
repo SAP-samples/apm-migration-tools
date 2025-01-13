@@ -35,7 +35,7 @@ ViewBase = declarative_base(name="ViewBase")
 
 
 class SQLAlchemyClient:
-
+    
     """
     Database Manager to handle all operations related to the database
     Raises:
@@ -43,7 +43,7 @@ class SQLAlchemyClient:
     """
 
     def __init__(self, config_id: str):
-
+        
         """
         Initializes the database connection using the provided configuration ID.
         Args:
@@ -138,7 +138,6 @@ class SQLAlchemyClient:
         Base.metadata.drop_all(self.engine)
         for view in self.views:
             SQLAlchemyClient.drop_view(self.engine, view)
-
             
     def truncate(self, model, synchronize_session=False) -> None:
 
@@ -407,7 +406,6 @@ class SQLAlchemyClient:
 
     @staticmethod
     def drop_view(engine, model):
-
         """
         Drops a database view if it exists.
         Parameters:
@@ -432,7 +430,6 @@ class SQLAlchemyClient:
                 connection.execute(text(f"DROP VIEW {model.__tablename__}"))
 
 
-# ---------------------------------------------------------------------------------------------------------------------------- #
 # Models: Tables
 # ---------------------------------------------------------------------------------------------------------------------------- #
 
@@ -534,7 +531,6 @@ class EIotUploadStatus(Base):
     status = Column(Enum(EIotUploadStatusValues))
     statusDescription = Column(String)
     statusTimestamp = Column(String)
-
 
 class APM_IndicatorPositions(Base):
     __tablename__ = "T_APM_INDICATOR_POSITIONS"
@@ -712,7 +708,6 @@ class EquModelTemplates(BaseModelTemplates):
 
 class FlocModelTemplates(BaseModelTemplates):
     __tablename__ = "T_PAI_FLOC_MODEL_TEMPLATES"
-
 
 class EquTemplateHeader(Base):
     __tablename__ = "T_PAI_EQU_TEMPLATE_HEADER"
@@ -999,7 +994,6 @@ class ERPCharacteristics(Base):
     to_CharacteristicRestriction___deferred_uri = Column(String)
     to_CharacteristicValue___deferred_uri = Column(String)
 
-
 class PreLoadIndicators(Base):
     __tablename__ = "T_PRE_LOAD_INDICATORS"
     idx = Column(Integer, primary_key=True, autoincrement=True)
@@ -1026,7 +1020,6 @@ class PreLoadIndicators(Base):
     ssid = Column(String)
     technicalObject_type = Column(String)
     valid = Column(String)
-
 
 class LoadIndicators(Base):
     __tablename__ = "T_LOAD_INDICATORS"
@@ -1070,6 +1063,133 @@ class PostLoadIndicators(Base):
     type = Column(String)
     calculationType = Column(String)
     source = Column(String)
+
+
+class ApmAlerts(Base):
+    __tablename__ = "T_ALERT"
+    idx = Column(Integer, primary_key=True, autoincrement=True)
+    tenantid = Column(String)
+    AlertType = Column(String)
+    TriggeredOn = Column(String)
+    TechnicalObject = Column(String)
+
+
+class PostAlerts(Base):
+    __tablename__ = "T_POST_ALERTS"
+    idx = Column(Integer, primary_key=True, autoincrement=True)
+    tenantid = Column(String)
+    AlertType = Column(String)
+    TriggeredOn = Column(String)
+    TechnicalObject = Column(String)
+    ErrorMessage = Column(String)
+    ErrorCode = Column(String)
+
+
+class ApmAlertTypes(Base):
+    __tablename__ = "T_ALERTTYPE"
+    idx = Column(Integer, primary_key=True, autoincrement=True)
+    tenantid = Column(String)
+    Name = Column(String)
+    Category = Column(String)
+    Source = Column(String)
+    Description = Column(String)
+    DefaultSeverity = Column(String)
+    DefaultSeverityDescription = Column(String)
+    DeduplicationPeriod = Column(String)
+    DeduplicationIsEnabled = Column(String)
+
+
+class PostAlertTypes(Base):
+    __tablename__ = "T_POST_ALERTTYPES"
+    idx = Column(Integer, primary_key=True, autoincrement=True)
+    tenantid = Column(String)
+    Name = Column(String)
+    Category = Column(String)
+    Source = Column(String)
+    Description = Column(String)
+    DefaultSeverity = Column(String)
+    DefaultSeverityDescription = Column(String)
+    DeduplicationPeriod = Column(String)
+    DeduplicationIsEnabled = Column(String)
+    ErrorMessage = Column(String)
+    ErrorCode = Column(String)
+
+
+class PaiAlerts(Base):
+    __tablename__ = "T_PAI_ALERTS"
+    idx = Column(Integer, primary_key=True, autoincrement=True)
+    tenantid = Column(String)
+    AlertId = Column(String)
+    AlertType = Column(String)
+    AlertTypeId = Column(String)
+    AlertTypeDescription = Column(String)
+    Description = Column(String)
+    StatusCode = Column(String)
+    SeverityCode = Column(String)
+    RefAlertTypeId = Column(String)
+    Source = Column(String)
+    Count = Column(String)
+    TriggeredOn = Column(String)
+    LastOccuredOn = Column(String)
+    CreatedOn = Column(String)
+    ChangedOn = Column(String)
+    CreatedBy = Column(String)
+    CreatedByName = Column(String)
+    ChangedBy = Column(String)
+    ProcessorName = Column(String)
+    Processor = Column(String)
+    EquipmentID = Column(String)
+    FunctionalLocationName = Column(String)
+    OperatorName = Column(String)
+    PlanningPlant = Column(String)
+    ErrorCodeDescription = Column(String)
+    FunctionalLocationID = Column(String)
+    MaintenancePlant = Column(String)
+    ModelID = Column(String)
+    TopEquipmentID = Column(String)
+    SerialNumber = Column(String)
+    EquipmentName = Column(String)
+    TopFunctionalLocationID = Column(String)
+    TopEquipmentName = Column(String)
+    PlannerGroup = Column(String)
+    ErrorCodeID = Column(String)
+    OperatorID = Column(String)
+    TopFunctionalLocationName = Column(String)
+    CountryID = Column(String)
+    ModelName = Column(String)
+    EquipmentDescription = Column(String)
+    FunctionalLocationDescription = Column(String)
+    IndicatorDescription = Column(String)
+    ModelDescription = Column(String)
+    TopEquipmentDescription = Column(String)
+    TopFunctionalLocationDescription = Column(String)
+    TemplateID = Column(String)
+    TemplateName = Column(String)
+    IndicatorGroupID = Column(String)
+    IndicatorGroupName = Column(String)
+    IndicatorID = Column(String)
+    IndicatorName = Column(String)
+    NotificationId = Column(String)
+    NotificationDate = Column(String)
+
+
+class PaiAlertTypes(Base):
+    __tablename__ = "T_PAI_ALERTTYPE"
+    idx = Column(Integer, primary_key=True, autoincrement=True)
+    tenantid = Column(String)
+    id = Column(String)
+    alertTypeID = Column(String)
+    alertDescription = Column(String)
+    externalID = Column(String)
+    errorCode = Column(String)
+    category = Column(String)
+    categoryDescription = Column(String)
+    severity = Column(String)
+    severityDescription = Column(String)
+    measurePointID = Column(String)
+    measurePointIDDescription = Column(String)
+    origin = Column(String)
+    indicatorGroupId = Column(String)
 
 
 # ---------------------------------------------------------------------------------------------------------------------------- #
@@ -1426,6 +1546,95 @@ class V_Transform_Indicators(ViewBase, BaseView_TransformIndicators):
     )
 
 
+class V_APM_AlertType(ViewBase):
+    __tablename__ = "V_ALERTTYPE_CHECK"
+    idx = Column(String)
+    tenantid = Column(String)
+    Name = Column(String)
+    Category = Column(String)
+    Description = Column(String)
+    DefaultSeverity = Column(String)
+    DefaultSeverityDescription = Column(String)
+    ErrorMessage = Column(String)
+    ErrorCode = Column(String)
+    valid = Column(String)
+    __table_args__ = (PrimaryKeyConstraint("tenantid", "idx"),)
+    __definition__ = (
+        select(
+            ApmAlertTypes.idx,
+            ApmAlertTypes.tenantid,
+            ApmAlertTypes.Name,
+            ApmAlertTypes.Category,
+            ApmAlertTypes.Description,
+            ApmAlertTypes.DefaultSeverity,
+            ApmAlertTypes.DefaultSeverityDescription,
+            PostAlertTypes.ErrorMessage,
+            PostAlertTypes.ErrorCode,
+            case(
+                # Condition 1: Name exists in Post_AlertTypes, else blank
+                (
+                    PostAlertTypes.Name.isnot(None),
+                    # If both ErrorCode and ErrorMessage are None, set valid to "X", else blank
+                    case(
+                        (
+                            PostAlertTypes.ErrorCode.is_(None)
+                            & PostAlertTypes.ErrorMessage.is_(None),
+                            "X",
+                        ),
+                        else_="",
+                    ),
+                ),
+                else_="",  # If Name is missing, valid is blank
+            ).label("valid"),
+        )
+        .select_from(ApmAlertTypes)
+        .outerjoin(
+            PostAlertTypes,
+            (ApmAlertTypes.Name == PostAlertTypes.Name)
+            & (ApmAlertTypes.Description == PostAlertTypes.Description),
+        )
+    )
+
+
+class V_APM_Alerts(ViewBase):
+    __tablename__ = "V_ALERTS_CHECK"
+    idx = Column(String)
+    tenantid = Column(String)
+    AlertType = Column(String)
+    TriggeredOn = Column(String)
+    TechnicalObject = Column(String)
+    ErrorMessage = Column(String)
+    ErrorCode = Column(String)
+    valid = Column(String)
+    __table_args__ = (PrimaryKeyConstraint("tenantid", "idx"),)
+    __definition__ = (
+        select(
+            ApmAlerts.idx,
+            ApmAlerts.tenantid,
+            ApmAlerts.AlertType,
+            ApmAlerts.TriggeredOn,
+            ApmAlerts.TechnicalObject,
+            PostAlerts.ErrorMessage,
+            PostAlerts.ErrorCode,
+            case(
+                # Condition 1: AlertType exists in Post_AlertTypes, else blank
+                (
+                    PostAlertTypes.Name.isnot(None),
+                    # If both ErrorCode and ErrorMessage are None, set valid to "X", else blank
+                    case(
+                        (
+                            PostAlerts.ErrorCode.is_(None)
+                            & PostAlerts.ErrorMessage.is_(None),
+                            "X",
+                        ),
+                        else_="",
+                    ),
+                ),
+                else_="",  # If AlertType is missing, valid is blank
+            ).label("valid"),
+        )
+        .select_from(ApmAlerts)
+        .outerjoin(PostAlerts, (ApmAlerts.AlertType == PostAlerts.AlertType))
 class V_PostLoad_Indicators(ViewBase):
 
     __tablename__ = "V_POST_LOAD_INDICATORS"
