@@ -192,7 +192,7 @@ This comparison only shows differences. All features that are available across a
 |View Work Orders|||||
 |View Technical Objects|||||
 |Create Rules via Recommendations|No|No|Yes|Planned|
-||||||
+|Data Retention||||24 months|
 ||||||
 ||||||
 
