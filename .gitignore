@@ -172,5 +172,7 @@ notebooks/db/**
 config/**
 !config/sample-config.yaml
 !config/__config__schema.json
+!config/__config_global.yaml
+!config/__config_global_schema.json
 !config/mapping.yaml
 test/**

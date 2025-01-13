@@ -1,7 +1,7 @@
 {
-  "$schema": "http://json-schema.org/draft-06/schema#",
-  "$ref": "#/definitions/MigrationConfig",
-  "definitions": {
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$ref": "#/$defs/MigrationConfig",
+  "$defs": {
     "MigrationConfig": {
       "type": "object",
       "additionalProperties": false,
@@ -9,26 +9,26 @@
         "config_id": {
           "type": "string"
         },
-        "log":{
-          "$ref": "#/definitions/Log"
+        "log": {
+          "$ref": "#/$defs/Log"
         },
         "database": {
-          "$ref": "#/definitions/Database"
+          "$ref": "#/$defs/Database"
         },
         "systems": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/System"
+            "$ref": "#/$defs/System"
           }
         },
         "extract": {
-          "$ref": "#/definitions/Extract"
+          "$ref": "#/$defs/Extract"
         },
         "transform": {
-          "$ref": "#/definitions/Transform"
+          "$ref": "#/$defs/Transform"
         },
         "load": {
-          "type": "object"
+          "$ref": "#/$defs/Load"
         }
       },
       "required": [
@@ -41,27 +41,27 @@
       ],
       "title": "Migration Config"
     },
-    "Log":{
+    "Log": {
       "type": "object",
-      "additionalProperties":false,
-      "properties":{
-        "name":{
-          "type":"string"
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string"
         },
-        "directory":{
-          "type":"string"
+        "directory": {
+          "type": "string"
         },
-        "level":{
-          "type":"string",
-          "enum":["DEBUG","INFO","WARNING","ERROR","CRITICAL"],
-          "default":"INFO"
+        "level": {
+          "type": "string",
+          "enum": ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"],
+          "default": "INFO"
         },
-        "print":{
-          "type":"boolean",
-          "default":false
+        "print": {
+          "type": "boolean",
+          "default": false
         }
       },
-      "required":["directory"]
+      "required": ["directory"]
     },
     "Database": {
       "type": "object",
@@ -82,30 +82,67 @@
       "required": ["connection", "drop_reload"],
       "title": "Database"
     },
-    "Extract": {
+    "Load": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "filters": {
-          "$ref": "#/definitions/Filters"
-        },
         "indicator": {
           "directory": {
             "type": "string"
           }
         },
-        "alerts":{
-          "directory":{
-            "type":"string"
+        "time-series": {
+          "directory": {
+            "type": "string"
           }
         }
       },
-      "required": ["filters"],
+      "required": ["indicator", "time-series"],
+      "title": "Load"
+    },
+    "Extract": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "filters": {
+          "$ref": "#/$defs/Filters"
+        },
+        "indicator": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "directory": {
+              "type": "string"
+            }
+          },
+          "required": ["directory"]
+        },
+        "time-series": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "directory": {
+              "type": "string"
+            },
+            "time_range_from": {
+              "type": "string"
+            },
+            "time_range_to": {
+              "type": "string"
+            },
+            "time_range_interval": {
+              "type": "string"
+            }
+          },
+          "required": ["directory", "time_range_to", "time_range_from"]
+        }
+      },
+      "required": ["time-series", "indicator"],
       "title": "Extract"
     },
     "Filters": {
       "type": "object",
-      "additionalProperties": false,
+      "additionalProperties": true,
       "properties": {
         "models_include": {
           "type": "array",
@@ -137,7 +174,7 @@
         },
         "type": {
           "type": "string",
-          "enum": ["APM", "APM_eIoT", "IOT", "ERP", "ACF", "PAI"]
+          "enum": ["APM", "IOT", "ERP", "ACF", "PAI"]
         },
         "host": {
           "type": "string",
@@ -154,21 +191,26 @@
           "minLength": 3,
           "maxLength": 3
         },
+        "ignore_cert": {
+          "type": "boolean",
+          "default": false
+        },
         "credentials": {
-          "$ref": "#/definitions/Credentials"
+          "$ref": "#/$defs/Credentials"
         },
         "iot_endpoints": {
-          "$ref": "#/definitions/IOT_Endpoints"
-        },
-        "config": {
-          "$ref": "#/definitions/IOT_Config"
+          "$ref": "#/$defs/IOT_Endpoints"
         }
       },
       "required": ["credentials", "name", "type"],
       "allOf": [
         {
           "if": {
-            "properties": { "type": { "const": "ERP" } }
+            "properties": {
+              "type": {
+                "const": "ERP"
+              }
+            }
           },
           "then": {
             "required": ["sys_id"]
@@ -243,16 +285,29 @@
       "additionalProperties": false,
       "properties": {
         "indicator": {
-          "$ref": "#/definitions/Indicator"
+          "$ref": "#/$defs/Indicator"
+        },
+        "time-series": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "directory": {
+              "type": "string"
+            }
+          },
+          "required": ["directory"]
         }
       },
-      "required": ["indicator"],
+      "required": ["indicator", "time-series"],
       "title": "Transform"
     },
     "Indicator": {
       "type": "object",
       "properties": {
         "directory": {
+          "type": "string"
+        },
+        "udr_input": {
           "type": "string"
         },
         "defaults": {
@@ -303,24 +358,7 @@
           ]
         }
       },
-      "required": ["directory", "defaults"],
-      "title": "Indicator"
-    },
-    "IOT_Config": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "time_range_from": {
-          "type": "string"
-        },
-        "time_range_to": {
-          "type": "string"
-        },
-        "time_range_interval": {
-          "type": "string"
-        }
-      },
-      "required": ["time_range_from", "time_range_to", "time_range_interval"],
+      "required": ["directory", "udr_input", "defaults"],
       "title": "Indicator"
     }
   }

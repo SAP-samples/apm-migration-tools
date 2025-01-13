@@ -1,6 +1,7 @@
 import os
 import yaml
 from jsonschema import Draft202012Validator
+from dotenv import dotenv_values
 
 CONFIG_PATH = "../config"
 
@@ -11,6 +12,18 @@ def read_config_files(directory, target_config_id):
     with open(schema_filepath, "r", encoding="utf-8") as file:
         schema = yaml.safe_load(file)
 
+    def replace_placeholders(obj, env_vars):
+        if isinstance(obj, dict):
+            return {k: replace_placeholders(v, env_vars) for k, v in obj.items()}
+        elif isinstance(obj, list):
+            return [replace_placeholders(i, env_vars) for i in obj]
+        elif isinstance(obj, str):
+            for key, value in env_vars.items():
+                obj = obj.replace(f"${key}", value)
+            return obj
+        else:
+            return obj
+
     for filename in os.listdir(directory):
         if filename.endswith(".yaml"):
             filepath = os.path.join(directory, filename)
@@ -18,6 +31,10 @@ def read_config_files(directory, target_config_id):
                 content = yaml.safe_load(file)
                 if content.get("config_id") == target_config_id:
                     Draft202012Validator(schema=schema).validate(content)
+
+                    env_vars = dotenv_values(os.path.join(CONFIG_PATH, ".env"))
+                    content = replace_placeholders(content, env_vars)
+
                     return content
     return None
 
@@ -53,19 +70,19 @@ def get_system_by_type(config, system_type: str):
     return None
 
 
-def get_mapping():
-    """
-    Retrieves the mapping configuration from a YAML file.
-    This function constructs the file path to the "mapping.yaml" file located
-    in the directory specified by CONFIG_PATH. If the file exists, it reads
-    the file and returns its contents as a dictionary. If the file does not
-    exist, it returns None.
-    Returns:
-        dict or None: The contents of the "mapping.yaml" file as a dictionary
-        if the file exists, otherwise None.
-    """
-    mapping_filepath = os.path.join(CONFIG_PATH, "mapping.yaml")
-    if os.path.exists(mapping_filepath):
-        with open(mapping_filepath, "r", encoding="utf-8") as file:
-            return yaml.safe_load(file)
+def get_config_global():
+    schema_file = "__config_global_schema.json"
+    content_file = "__config_global.yaml"
+
+    # load the schema
+    schema_filepath = os.path.join(CONFIG_PATH, schema_file)
+    with open(schema_filepath, "r", encoding="utf-8") as file:
+        schema = yaml.safe_load(file)
+
+    # load the content
+    config_filepath = os.path.join(CONFIG_PATH, content_file)
+    with open(config_filepath, "r", encoding="utf-8") as file:
+        content = yaml.safe_load(file)
+        Draft202012Validator(schema=schema).validate(content)
+        return content
     return None

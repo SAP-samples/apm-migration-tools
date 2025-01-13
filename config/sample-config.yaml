@@ -15,7 +15,7 @@ log:
   print: true #default value is false
 
 systems:
-# acf (aspm) system configuration
+  # acf (aspm) system configuration
   - name: "ASPM Sprintend"
     type: "ACF"
     host: "https://{name}.cfapps.{region}.hana.ondemand.com"
@@ -24,7 +24,7 @@ systems:
       client_secret: "XXX"
       token_url: "https://{name}.authentication.{region}.hana.ondemand.com/oauth/token"
 
-# APM system configuration
+  # APM system configuration
   - name: "APM Test"
     type: "APM"
     host: "XXX"
@@ -34,26 +34,27 @@ systems:
       token_url: "https://{name}.authentication.{region}.hana.ondemand.com/oauth/token"
       x_api_key: "XXX"
 
- # ERP system
+  # ERP system
   - name: "ERP_910"
     sys_id: "ERP"
     client: "910"
     type: "ERP"
     host: "https://host.tld:44320"
+    ignore_cert: false
     credentials:
       username: "XXX"
-      password: "XXX"
+      password: $ERP_PASSWORD
 
-#PAI system
+  #PAI system
   - name: "dca-test-pai"
     type: "PAI"
     host: "XXX"
     credentials:
       client_id: "XXX"
-      client_secret: "XXX"
+      client_secret: $PAI_CLIENT_SECRET
       token_url: "https://{name}.authentication.{region}.hana.ondemand.com/oauth/token"
 
- #IOT system
+  #IOT system
   - name: "SAP IOT"
     type: "IOT"
     config:
@@ -72,6 +73,10 @@ systems:
 
 extract:
   filters:
+    equipments_include:
+      - "equipmentguid1"
+      - "equipmentguid2"
+      - "equipmentguid3"
     models_include:
       - "model1"
       - "model2"
@@ -84,6 +89,7 @@ extract:
 transform:
   indicator:
     directory: "../migration-data/indicators/transform"
+    udr_input: "../migration-data/indicators/XYZ.csv"
     defaults:
       apm_default_indicator_category: "M"
       apm_default_indicator_position:
