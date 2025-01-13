@@ -135,9 +135,18 @@
             }
           },
           "required": ["directory", "time_range_to", "time_range_from"]
+        },
+        "alerts": {
+          "type": "object",
+          "properties": {
+            "directory": {
+              "type": "string"
+            }
+          },
+          "required": ["directory"]
         }
       },
-      "required": ["time-series", "indicator"],
+      "required": ["filters", "time-series", "indicator"],
       "title": "Extract"
     },
     "Filters": {
@@ -174,7 +183,7 @@
         },
         "type": {
           "type": "string",
-          "enum": ["APM", "IOT", "ERP", "ACF", "PAI"]
+          "enum": ["APM", "APM_eIoT", "IOT", "ERP", "ACF", "PAI"]
         },
         "host": {
           "type": "string",
@@ -200,6 +209,22 @@
         },
         "iot_endpoints": {
           "$ref": "#/$defs/IOT_Endpoints"
+        },
+        "config": {
+          "type": "object",
+          "properties": {
+            "time_range_from": {
+              "type": "string",
+              "format": "date"
+            },
+            "time_range_to": {
+              "type": "string",
+              "format": "date"
+            },
+            "time_range_interval": {
+              "type": "string"
+            }
+          }
         }
       },
       "required": ["credentials", "name", "type"],
