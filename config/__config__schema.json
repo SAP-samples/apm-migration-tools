@@ -1,0 +1,327 @@
+{
+  "$schema": "http://json-schema.org/draft-06/schema#",
+  "$ref": "#/definitions/MigrationConfig",
+  "definitions": {
+    "MigrationConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "config_id": {
+          "type": "string"
+        },
+        "log":{
+          "$ref": "#/definitions/Log"
+        },
+        "database": {
+          "$ref": "#/definitions/Database"
+        },
+        "systems": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/System"
+          }
+        },
+        "extract": {
+          "$ref": "#/definitions/Extract"
+        },
+        "transform": {
+          "$ref": "#/definitions/Transform"
+        },
+        "load": {
+          "type": "object"
+        }
+      },
+      "required": [
+        "config_id",
+        "database",
+        "extract",
+        "load",
+        "systems",
+        "transform"
+      ],
+      "title": "Migration Config"
+    },
+    "Log":{
+      "type": "object",
+      "additionalProperties":false,
+      "properties":{
+        "name":{
+          "type":"string"
+        },
+        "directory":{
+          "type":"string"
+        },
+        "level":{
+          "type":"string",
+          "enum":["DEBUG","INFO","WARNING","ERROR","CRITICAL"],
+          "default":"INFO"
+        },
+        "print":{
+          "type":"boolean",
+          "default":false
+        }
+      },
+      "required":["directory"]
+    },
+    "Database": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "connection": {
+          "type": "string"
+        },
+        "sqlalchemy_echo": {
+          "type": "boolean",
+          "default": false
+        },
+        "drop_reload": {
+          "type": "boolean",
+          "default": false
+        }
+      },
+      "required": ["connection", "drop_reload"],
+      "title": "Database"
+    },
+    "Extract": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "filters": {
+          "$ref": "#/definitions/Filters"
+        },
+        "indicator": {
+          "directory": {
+            "type": "string"
+          }
+        },
+        "alerts":{
+          "directory":{
+            "type":"string"
+          }
+        }
+      },
+      "required": ["filters"],
+      "title": "Extract"
+    },
+    "Filters": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "models_include": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "models_exclude": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": ["models_exclude", "models_include"],
+      "title": "Filters"
+    },
+    "System": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "flp": {
+          "type": "string",
+          "format": "uri",
+          "qt-uri-protocols": ["https"]
+        },
+        "name": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "enum": ["APM", "APM_eIoT", "IOT", "ERP", "ACF", "PAI"]
+        },
+        "host": {
+          "type": "string",
+          "format": "uri",
+          "qt-uri-protocols": ["https"]
+        },
+        "client": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 3
+        },
+        "sys_id": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 3
+        },
+        "credentials": {
+          "$ref": "#/definitions/Credentials"
+        },
+        "iot_endpoints": {
+          "$ref": "#/definitions/IOT_Endpoints"
+        },
+        "config": {
+          "$ref": "#/definitions/IOT_Config"
+        }
+      },
+      "required": ["credentials", "name", "type"],
+      "allOf": [
+        {
+          "if": {
+            "properties": { "type": { "const": "ERP" } }
+          },
+          "then": {
+            "required": ["sys_id"]
+          }
+        }
+      ],
+      "title": "System"
+    },
+    "Credentials": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "client_id": {
+          "type": "string"
+        },
+        "client_secret": {
+          "type": "string"
+        },
+        "token_url": {
+          "type": "string",
+          "format": "uri",
+          "qt-uri-protocols": ["https"]
+        },
+        "x_api_key": {
+          "type": "string"
+        },
+        "username": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      },
+      "required": [],
+      "title": "Credentials"
+    },
+    "IOT_Endpoints": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "config_thing": {
+          "type": "string",
+          "format": "uri",
+          "qt-uri-protocols": ["https"]
+        },
+        "thing": {
+          "type": "string",
+          "format": "uri",
+          "qt-uri-protocols": ["https"]
+        },
+        "cold_store": {
+          "type": "string",
+          "format": "uri",
+          "qt-uri-protocols": ["https"]
+        },
+        "cold_store_download": {
+          "type": "string",
+          "format": "uri",
+          "qt-uri-protocols": ["https"]
+        }
+      },
+      "required": [
+        "config_thing",
+        "thing",
+        "cold_store",
+        "cold_store_download"
+      ],
+      "title": "IOT Endpoint"
+    },
+    "Transform": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "indicator": {
+          "$ref": "#/definitions/Indicator"
+        }
+      },
+      "required": ["indicator"],
+      "title": "Transform"
+    },
+    "Indicator": {
+      "type": "object",
+      "properties": {
+        "directory": {
+          "type": "string"
+        },
+        "defaults": {
+          "type": "object",
+          "properties": {
+            "apm_default_indicator_position": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "prefix": {
+                  "type": "string"
+                },
+                "seperator": {
+                  "type": "string"
+                },
+                "numericflexible": {
+                  "type": "string"
+                },
+                "numeric": {
+                  "type": "string"
+                },
+                "boolean": {
+                  "type": "string"
+                },
+                "date": {
+                  "type": "string"
+                },
+                "string": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "seperator",
+                "numeric",
+                "numericflexible",
+                "boolean",
+                "date",
+                "string"
+              ]
+            },
+            "apm_default_indicator_category": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "apm_default_indicator_category",
+            "apm_default_indicator_position"
+          ]
+        }
+      },
+      "required": ["directory", "defaults"],
+      "title": "Indicator"
+    },
+    "IOT_Config": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "time_range_from": {
+          "type": "string"
+        },
+        "time_range_to": {
+          "type": "string"
+        },
+        "time_range_interval": {
+          "type": "string"
+        }
+      },
+      "required": ["time_range_from", "time_range_to", "time_range_interval"],
+      "title": "Indicator"
+    }
+  }
+}
