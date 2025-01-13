@@ -1,0 +1,108 @@
+config_id: "SAMPLE"
+
+database:
+  # Connection string sqlite
+  connection: "sqlite:///../migration-data/dev.db"
+  # Connection string postgres
+  # connection: "postgresql://user:password@localhost:5432/dbname"
+  sqlalchemy_echo: false
+  drop_reload: true
+
+log:
+  name: "" #if there is no value, then config_id is considered as the name (log file is created as [name.log])
+  directory: "../migration-data"
+  level: "DEBUG" #default value is INFO
+  print: true #default value is false
+
+systems:
+  # acf (aspm) system configuration
+  - name: "ASPM Sprintend"
+    type: "ACF"
+    host: "https://{name}.cfapps.{region}.hana.ondemand.com"
+    credentials:
+      client_id: "XXX"
+      client_secret: "XXX"
+      token_url: "https://{name}.authentication.{region}.hana.ondemand.com/oauth/token"
+
+  # APM system configuration
+  - name: "APM Test"
+    type: "APM"
+    host: "XXX"
+    credentials:
+      client_id: "XXX"
+      client_secret: "XXX"
+      token_url: "https://{name}.authentication.{region}.hana.ondemand.com/oauth/token"
+      x_api_key: "XXX"
+
+  # ERP system
+  - name: "ERP_910"
+    sys_id: "ERP"
+    client: "910"
+    type: "ERP"
+    host: "https://host.tld:44320"
+    ignore_cert: false
+    credentials:
+      username: "XXX"
+      password: $ERP_PASSWORD
+
+  #PAI system
+  - name: "dca-test-pai"
+    type: "PAI"
+    host: "XXX"
+    credentials:
+      client_id: "XXX"
+      client_secret: $PAI_CLIENT_SECRET
+      token_url: "https://{name}.authentication.{region}.hana.ondemand.com/oauth/token"
+
+  #IOT system
+  - name: "SAP IOT"
+    type: "IOT"
+    config:
+      time_range_from: "2020-01-01"
+      time_range_to: "2021-05-15"
+      time_range_interval: "YEARS"
+    iot_endpoints:
+      config_thing: "https://config-thing-sap.cfapps.eu10.hana.ondemand.com"
+      thing: "https://appiot-mds.cfapps.eu10.hana.ondemand.com"
+      cold_store: "https://coldstore-export-sap.cfapps.eu10.hana.ondemand.com"
+      cold_store_download: "https://coldstore-downloader-sap.cfapps.eu10.hana.ondemand.com"
+    credentials:
+      client_id: "XXX"
+      client_secret: "XXX"
+      token_url: "XXX"
+
+extract:
+  filters:
+    equipments_include:
+      - "equipmentguid1"
+      - "equipmentguid2"
+      - "equipmentguid3"
+    models_include:
+      - "model1"
+      - "model2"
+    models_exclude:
+      - "model3"
+      - "model4"
+  indicator:
+    directory: "../migration-data/indicators/extract"
+
+transform:
+  indicator:
+    directory: "../migration-data/indicators/transform"
+    udr_input: "../migration-data/indicators/XYZ.csv"
+    defaults:
+      apm_default_indicator_category: "M"
+      apm_default_indicator_position:
+        prefix: "M"
+        numeric: "NUM"
+        numericflexible: "NUMFLEX"
+        boolean: "BOOL"
+        date: "DATE"
+        string: "STR"
+        seperator: "_"
+
+load:
+  batch_size: 1000
+  max_retries: 3
+  indicator:
+    directory: "../migration-data/indicators/load"
