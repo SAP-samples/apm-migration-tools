@@ -35,7 +35,7 @@ ViewBase = declarative_base(name="ViewBase")
 
 
 class SQLAlchemyClient:
-    
+
     """
     Database Manager to handle all operations related to the database
     Raises:
@@ -43,7 +43,7 @@ class SQLAlchemyClient:
     """
 
     def __init__(self, config_id: str):
-        
+
         """
         Initializes the database connection using the provided configuration ID.
         Args:
@@ -138,7 +138,7 @@ class SQLAlchemyClient:
         Base.metadata.drop_all(self.engine)
         for view in self.views:
             SQLAlchemyClient.drop_view(self.engine, view)
-            
+
     def truncate(self, model, synchronize_session=False) -> None:
 
         """
@@ -532,6 +532,7 @@ class EIotUploadStatus(Base):
     statusDescription = Column(String)
     statusTimestamp = Column(String)
 
+
 class APM_IndicatorPositions(Base):
     __tablename__ = "T_APM_INDICATOR_POSITIONS"
     idx = Column(Integer, primary_key=True, autoincrement=True)
@@ -708,6 +709,7 @@ class EquModelTemplates(BaseModelTemplates):
 
 class FlocModelTemplates(BaseModelTemplates):
     __tablename__ = "T_PAI_FLOC_MODEL_TEMPLATES"
+
 
 class EquTemplateHeader(Base):
     __tablename__ = "T_PAI_EQU_TEMPLATE_HEADER"
@@ -994,6 +996,7 @@ class ERPCharacteristics(Base):
     to_CharacteristicRestriction___deferred_uri = Column(String)
     to_CharacteristicValue___deferred_uri = Column(String)
 
+
 class PreLoadIndicators(Base):
     __tablename__ = "T_PRE_LOAD_INDICATORS"
     idx = Column(Integer, primary_key=True, autoincrement=True)
@@ -1020,6 +1023,7 @@ class PreLoadIndicators(Base):
     ssid = Column(String)
     technicalObject_type = Column(String)
     valid = Column(String)
+
 
 class LoadIndicators(Base):
     __tablename__ = "T_LOAD_INDICATORS"
@@ -1635,6 +1639,9 @@ class V_APM_Alerts(ViewBase):
         )
         .select_from(ApmAlerts)
         .outerjoin(PostAlerts, (ApmAlerts.AlertType == PostAlerts.AlertType))
+    )
+
+
 class V_PostLoad_Indicators(ViewBase):
 
     __tablename__ = "V_POST_LOAD_INDICATORS"
