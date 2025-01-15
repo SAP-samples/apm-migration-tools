@@ -128,3 +128,5 @@ Copyright (c) 2024 SAP SE or an SAP affiliate company. All rights reserved. This
 [^1]: Visual Studio Code needs to be enabled with Jupyter Extension Support to support the execution of Jupyter Notebook (.ipynb) files.
 [^2]: The tools have been written and tested in Visual Studio Code. Any other IDE with Jupyter support may be used for execution.
 [^3]: Installation of Git is optional. It is required only if the repository is being cloned using `terminal` or `command prompt` (or) if there are any enhancements to be done in the tool.
+
+[![REUSE status](https://api.reuse.software/badge/github.com/SAP-samples/apm-migration-tools)](https://api.reuse.software/info/github.com/SAP-samples/apm-migration-tools)
