@@ -97,10 +97,11 @@ Navigate to the `/notebooks` directory. Notebooks specific to the tool may be ex
 | 5 | `Indicators-03-Load-2-Validate.ipynb` |
 | 6 | `Indicators-03-Load-3-Data-Load.ipynb` |
 | **Timeseries** |[Documentation](docs/time-series-migration.md)|
-| 1 | `IOT-Extract-Time-Series-Data-From-IOT.ipynb` |
-| 2 | `IOT-Transform-Time-Series-Data-To-eIOT.ipynb` |
-| **Alerts** |[Documentation](wrong_link.md)|
-| 1 | `Alerts.ipynb` |
+| 1 | `IOT-01-Extract-Time-Series-Data-From-IOT.ipynb` |
+| 2 | `IOT-02-Transform-Time-Series-Data-To-eIOT.ipynb` |
+| 3 | `IOT-03-Load-Time-Series-Data.ipynb` |
+| **Alerts** |[Documentation](docs/alerts.md)|
+| 1 | `Alerts-01-Extract-Transform-Load.ipynb` |
 
 ## Known Issues
 <!-- You may simply state "No known issues. -->
