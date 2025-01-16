@@ -170,6 +170,7 @@ notebooks/certificates/*
 notebooks/db/**
 *.sql
 config/**
+!config/.env.sample
 !config/sample-config.yaml
 !config/__config__schema.json
 !config/__config_global.yaml
