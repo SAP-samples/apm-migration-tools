@@ -131,7 +131,7 @@ Additional constraints for the migration can be there if you extended APM via AP
 For a full list of functional differences and features, that might be available only at a later date in APM eiot please refer to chapter [here](#Feature-Comparison) below.
 
 From a commercial point of view the old APM (base) license for APM was based on the material number 8012342.
-The new APM (base) license is based on material number 801892. 
+The new APM (base) license is based on material number 8018912. 
 
 The new APM license is required to create a subscription to APM with plan "production" and hence all customers should license the new APM license ahead of or at the latest during their migration project.
 
