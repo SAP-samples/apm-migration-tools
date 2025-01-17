@@ -330,11 +330,6 @@ class APMClient(APIClient):
 
         self.base_url = f"{self.base_url}/{service}/v1"
 
-        # self.erp_config = get_system_by_type(self.config, "ERP")
-        # if self.erp_config is None:
-        #     raise ValueError("ERP system not found in configuration")
-        # self.erp_ssid = self.get_external_ssid(config_id)
-
 
 class ERPClient:
 
