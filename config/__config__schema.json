@@ -194,10 +194,8 @@
           "minLength": 3,
           "maxLength": 3
         },
-        "sys_id": {
-          "type": "string",
-          "minLength": 3,
-          "maxLength": 3
+        "acf_ssid":{
+          "type": "string"
         },
         "ignore_cert": {
           "type": "boolean",
@@ -237,7 +235,7 @@
             }
           },
           "then": {
-            "required": ["sys_id"]
+            "required": ["acf_ssid"]
           }
         }
       ],

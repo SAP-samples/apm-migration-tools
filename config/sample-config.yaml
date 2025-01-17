@@ -59,9 +59,9 @@ systems:
 
   # ERP system
   - name: "ERP_910"
-    sys_id: "ERP"
     client: "910"
     type: "ERP"
+    acf_ssid: "ERP_910"
     host: "https://host.tld:44320"
     ignore_cert: false
     credentials:
