@@ -1,10 +1,11 @@
-config_id: "SAMPLE"
+config_id: "SAMPLE" #config_id is used to identify the configuration file within python notenooks
 
 database:
   # Connection string sqlite
   connection: "sqlite:///../migration-data/dev.db"
   # Connection string postgres
   # connection: "postgresql://user:password@localhost:5432/dbname"
+  # Other databease types are also supported. For more information, please refer to the SQLAlchemy documentation
   sqlalchemy_echo: false
   drop_reload: true
 
@@ -16,23 +17,45 @@ log:
 
 systems:
   # acf (aspm) system configuration
-  - name: "ASPM Sprintend"
+  - name: "PAI Test"
     type: "ACF"
+    # From the service key of the PAI or ASPM service instance which is created in the SAP BTP subaccount
+    # and space where the application is subscriped, you can derive the following values:
+    # host (service-key->endpoints->asset-central-service:),
+    # client_id (service-key->uaa->clientid)
+    # client_secret (service-key->uaa->clientid)
+    # token_url (service-key->uaa->url)
     host: "https://{name}.cfapps.{region}.hana.ondemand.com"
+    # host example: https://ac-live.cfapps.eu10.hana.ondemand.com
     credentials:
-      client_id: "XXX"
-      client_secret: "XXX"
-      token_url: "https://{name}.authentication.{region}.hana.ondemand.com/oauth/token"
+      client_id: $DEV-PAI-CLIENT-ID
+      # best practice is to store the client secret in the environment variables
+      # you cen use the following syntax to access the environment variables
+      # client_secret: $PAI_CLIENT_SECRET
+      # Within the environment variables, you can store the client secret as a plain text
+      # like this: PAI_CLIENT_SECRET="sb-33849ca0....", see file ".env.sample"
+      client_secret: $DEV-PAI-CLIENT-SECRET
+      token_url: "https://{subaccount-subdomain}.authentication.{region}.hana.ondemand.com/oauth/token"
 
   # APM system configuration
   - name: "APM Test"
     type: "APM"
-    host: "XXX"
+    # From the service key of the APM service instance which is created in the SAP BTP subaccount
+    # and space where the application is subscriped, you can derive the following values:
+    # host (service-key->endpoints->any-endpoint-without),
+    # client_id (service-key->uaa->clientid)
+    # client_secret (service-key->uaa->clientid)
+    # token_url (service-key->uaa->url)
+    host: "https://api-apm.prod.apimanagement.eu10.hana.ondemand.com"
     credentials:
-      client_id: "XXX"
-      client_secret: "XXX"
-      token_url: "https://{name}.authentication.{region}.hana.ondemand.com/oauth/token"
-      x_api_key: "XXX"
+      client_id: $DEV-APM-CLIENT-ID
+      client_secret: $DEV-APM-CLIENT-SECRET
+      token_url: "https://{subaccount-subdomain}.authentication.{region}.hana.ondemand.com/oauth/token"
+      # You can obtain the API key value by creating a ticket in the component APM-OPS-SRV with
+      # priority as Medium. Provide the following details in the ticket:
+      # Sub-Domain, Sub-Account ID, Sub-Account API end point/APM FLP: To identify landscapes
+      # Email ID: to send API keys
+      x_api_key: $DEV-APM-API-KEY
 
   # ERP system
   - name: "ERP_910"
@@ -52,39 +75,38 @@ systems:
     credentials:
       client_id: "XXX"
       client_secret: $PAI_CLIENT_SECRET
-      token_url: "https://{name}.authentication.{region}.hana.ondemand.com/oauth/token"
+      token_url: "https://{subaccount-subdomain}.authentication.{region}.hana.ondemand.com/oauth/token"
 
   #IOT system
   - name: "SAP IOT"
     type: "IOT"
-    config:
-      time_range_from: "2020-01-01"
-      time_range_to: "2021-05-15"
-      time_range_interval: "YEARS"
     iot_endpoints:
       config_thing: "https://config-thing-sap.cfapps.eu10.hana.ondemand.com"
       thing: "https://appiot-mds.cfapps.eu10.hana.ondemand.com"
       cold_store: "https://coldstore-export-sap.cfapps.eu10.hana.ondemand.com"
       cold_store_download: "https://coldstore-downloader-sap.cfapps.eu10.hana.ondemand.com"
     credentials:
-      client_id: "XXX"
-      client_secret: "XXX"
-      token_url: "XXX"
+      client_id: $DEV-IOT-CLIENT-ID
+      client_secret: $DEV-IOT-CLIENT-SECRET
+      token_url: "https://{subaccount-subdomain}.authentication.{region}.hana.ondemand.com/oauth/token"
 
 extract:
   filters:
+    # comment out "equipments_include" / "equipments_exclude" if not needed
     equipments_include:
       - "equipmentguid1"
       - "equipmentguid2"
       - "equipmentguid3"
-    models_include:
-      - "model1"
-      - "model2"
-    models_exclude:
-      - "model3"
-      - "model4"
+    equipments_exclude:
+      - "equipmentguid4"
+      - "equipmentguid5"
   indicator:
     directory: "../migration-data/indicators/extract"
+  time-series:
+    directory: "../migration-data/time-series/download/"
+    time_range_from: "2019-11-02"
+    time_range_to: "2020-12-15"
+    time_range_interval: "YEARS" #not yet used
 
 transform:
   indicator:
@@ -100,9 +122,11 @@ transform:
         date: "DATE"
         string: "STR"
         seperator: "_"
+  time-series:
+    directory: "../migration-data/time-series/transformed/"
 
 load:
-  batch_size: 1000
-  max_retries: 3
   indicator:
     directory: "../migration-data/indicators/load"
+  time-series:
+    directory: "../migration-data/time-series/uloaded/"

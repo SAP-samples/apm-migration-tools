@@ -153,20 +153,19 @@
       "type": "object",
       "additionalProperties": true,
       "properties": {
-        "models_include": {
+        "equipment_include": {
           "type": "array",
           "items": {
             "type": "string"
           }
         },
-        "models_exclude": {
+        "equipment_exclude": {
           "type": "array",
           "items": {
             "type": "string"
           }
         }
       },
-      "required": ["models_exclude", "models_include"],
       "title": "Filters"
     },
     "System": {
