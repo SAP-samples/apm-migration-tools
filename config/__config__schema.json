@@ -194,11 +194,6 @@
           "minLength": 3,
           "maxLength": 3
         },
-        "sys_id": {
-          "type": "string",
-          "minLength": 3,
-          "maxLength": 3
-        },
         "acf_ssid":{
           "type": "string"
         },
@@ -240,7 +235,7 @@
             }
           },
           "then": {
-            "required": ["sys_id","acf_ssid"]
+            "required": ["acf_ssid"]
           }
         }
       ],

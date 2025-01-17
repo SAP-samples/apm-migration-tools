@@ -59,7 +59,6 @@ systems:
 
   # ERP system
   - name: "ERP_910"
-    sys_id: "ERP"
     client: "910"
     type: "ERP"
     acf_ssid: "ERP_910"
