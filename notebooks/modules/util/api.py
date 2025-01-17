@@ -271,9 +271,7 @@ class ACFClient(APIClient):
         self.erp_config = get_system_by_type(self.config, "ERP")
         if self.erp_config is None:
             raise ValueError("ERP system not found in configuration")
-        self.erp_ssid = (
-            f"{str(self.erp_config['sys_id']).upper()}_{self.erp_config['client']}"
-        )
+        self.erp_ssid = self.erp_config.get("acf_ssid")
 
 
 class APMClient(APIClient):
@@ -308,9 +306,7 @@ class APMClient(APIClient):
         self.erp_config = get_system_by_type(self.config, "ERP")
         if self.erp_config is None:
             raise ValueError("ERP system not found in configuration")
-        self.erp_ssid = (
-            f"{str(self.erp_config['sys_id']).upper()}_{self.erp_config['client']}"
-        )
+        self.erp_ssid = self.erp_config.get("apm_ssid")
 
 
 class ERPClient:
