@@ -301,12 +301,39 @@ class APMClient(APIClient):
         """
 
         super().__init__(config_id, "APM")
+
+        # --- fetch SSID from Technical Object Service (APM supports only one SSID)
+        endpoint = f"{self.base_url}/TechnicalObjectService/v1/TechnicalObjects"
+        headers = {
+            "Authorization": f"Bearer {self.get_token()}",
+            "Content-Type": "application/json",
+            "x-api-key": self.x_api_key,
+        }
+        params = {"$top": 1, "$select": "SSID"}
+        res = requests.get(
+            url=endpoint, timeout=self.timeout, headers=headers, params=params
+        )
+        if res.status_code != 200:
+            raise APIException(
+                endpoint=endpoint, status_code=res.status_code, response=res.text
+            )
+        data = res.json()
+        ssid = None
+        if "value" in data:
+            ssid = data.get("value")[0].get("SSID")
+        if ssid is None:
+            raise ValueError(
+                "APM does not have any technical object (or) SSID is not assigned."
+            )
+        self.erp_ssid = ssid
+        # ---
+
         self.base_url = f"{self.base_url}/{service}/v1"
 
-        self.erp_config = get_system_by_type(self.config, "ERP")
-        if self.erp_config is None:
-            raise ValueError("ERP system not found in configuration")
-        self.erp_ssid = self.erp_config.get("apm_ssid")
+        # self.erp_config = get_system_by_type(self.config, "ERP")
+        # if self.erp_config is None:
+        #     raise ValueError("ERP system not found in configuration")
+        # self.erp_ssid = self.get_external_ssid(config_id)
 
 
 class ERPClient:

@@ -202,9 +202,6 @@
         "acf_ssid":{
           "type": "string"
         },
-        "apm_ssid":{
-          "type": "string"
-        },
         "ignore_cert": {
           "type": "boolean",
           "default": false
@@ -243,7 +240,7 @@
             }
           },
           "then": {
-            "required": ["sys_id","acf_ssid","apm_ssid"]
+            "required": ["sys_id","acf_ssid"]
           }
         }
       ],
