@@ -88,7 +88,7 @@ The following subset of objects is supported with these tools:
 4. Failure Mode and Effects Analysis
 5. Reliability Centered Maintenance
 6. Indicators
-7. Alerts
+7. Alerts & Alert Types
 8. Time Series
 
 The first 5 tools (ASPM) are based on internal apis and on flows provided in an SAP internal DI (SAP Data Intelligence) instance so only D- or I- users can apply them.
