@@ -10,42 +10,78 @@ import numpy as np
 from modules.util.config import get_config_by_id
 
 
-def generate_yearly_slices(start_date_param, end_date_param):
+def generate_slices(start_date_param, end_date_param, interval="YEARS"):
+    """
+    Generate slices based on the start and end date parameters
+    Parameters:
+        start_date_param(str): Start date parameter
+        end_date_param(str): End date parameter
+        interval(str, optional): Interval for slicing. **Defaults to year**
+    Returns:
+        list: List of tuples containing start and end date for each slice
+    """
     start_date_formated = datetime.strptime(start_date_param, "%Y-%m-%d")
     end_date_formated = datetime.strptime(end_date_param, "%Y-%m-%d")
 
     slices = []
 
-    if start_date_formated.year == end_date_formated.year:
-        start_date = datetime(start_date_formated.year, 10, 1)
-        end_date = datetime(end_date_formated.year, 11, 30)
-        slices.append((start_date, end_date))
+    if interval == "YEARS":
+        if start_date_formated.year == end_date_formated.year:
+            start_date = datetime(start_date_formated.year, 1, 1)
+            end_date = datetime(end_date_formated.year, 12, 31)
+            slices.append((start_date, end_date))
+        else:
+            # Adjust the first interval if the start date is not January 1st
+            if start_date_formated.month != 1 or start_date_formated.day != 1:
+                first_end_date = datetime(start_date_formated.year, 12, 31)
+                slices.append((start_date_formated, first_end_date))
+                start_date_formated = first_end_date + timedelta(days=1)
 
-    else:
-        # Adjust the first interval if the start date is not January 1st
-        if start_date_formated.month != 1 or start_date_formated.day != 1:
-            first_end_date = datetime(start_date_formated.year, 12, 31)
-            slices.append((start_date_formated, first_end_date))
-            start_date_formated = first_end_date + timedelta(days=1)
+            # Adjust the last interval if the end date is not December 31st
+            if end_date_formated.month != 12 or end_date_formated.day != 31:
+                last_start_date = datetime(end_date_formated.year, 1, 1)
+                slices.append((last_start_date, end_date_formated))
+                end_date_formated = last_start_date - timedelta(days=1)
 
-        # Adjust the last interval if the end date is not December 31st
-        if end_date_formated.month != 12 or end_date_formated.day != 31:
-            last_start_date = datetime(end_date_formated.year, 1, 1)
-            slices.append((last_start_date, end_date_formated))
-            end_date_formated = last_start_date - timedelta(days=1)
+            # Generate full year intervals
+            current_start_date = start_date_formated
+            while current_start_date <= end_date_formated:
+                current_end_date = datetime(current_start_date.year, 12, 31)
+                slices.append((current_start_date, current_end_date))
+                current_start_date = datetime(current_start_date.year + 1, 1, 1)
 
-        # Generate full year intervals
+    elif interval == "MONTHS":
         current_start_date = start_date_formated
         while current_start_date <= end_date_formated:
-            current_end_date = datetime(current_start_date.year, 12, 31)
+            current_end_date = (
+                datetime(current_start_date.year, current_start_date.month, 1)
+                + timedelta(days=32)
+            ).replace(day=1) - timedelta(days=1)
+            if current_end_date > end_date_formated:
+                current_end_date = end_date_formated
             slices.append((current_start_date, current_end_date))
-            current_start_date = datetime(current_start_date.year + 1, 1, 1)
+            current_start_date = current_end_date + timedelta(days=1)
+
+    elif interval == "WEEKS":
+        current_start_date = start_date_formated
+        while current_start_date <= end_date_formated:
+            current_end_date = current_start_date + timedelta(days=6)
+            if current_end_date > end_date_formated:
+                current_end_date = end_date_formated
+            slices.append((current_start_date, current_end_date))
+            current_start_date = current_end_date + timedelta(days=1)
+
+    elif interval == "DAYS":
+        current_start_date = start_date_formated
+        while current_start_date <= end_date_formated:
+            current_end_date = current_start_date
+            slices.append((current_start_date, current_end_date))
+            current_start_date = current_end_date + timedelta(days=1)
 
     return slices
 
 
 def convert_dataframe(df: pd.DataFrame) -> pd.DataFrame:
-
     """
     Converts a dataframe content to string datatype. If there are any blank lists or values,
     they are replaced with NULL during the conversion.
@@ -72,7 +108,6 @@ def convert_dataframe(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def explode_normalize(data: pd.DataFrame, id: list, id_explode: str, sep: str = "_"):
-
     """
     Explode and normalize data in a Data Frame
 
@@ -110,10 +145,11 @@ def convert_unix_to_iso(time: int) -> str:
         + "Z"
     )
 
+
 # ------------------------------------------------------------------------------------ #
 
-class Logger:
 
+class Logger:
     """
     Logger class provides methods to create and manage loggers with specific configurations.
     Attributes:
@@ -133,7 +169,6 @@ class Logger:
 
     @staticmethod
     def get_logger(config_id: str):
-
         """
         Retrieves or creates a logger based on the provided configuration ID.
         If a logger with the specified configuration ID already exists, it is returned.
@@ -195,7 +230,6 @@ class Logger:
 
     @staticmethod
     def clear_log_file(config_id: str):
-
         """
         Clears the log file associated with the given configuration ID.
         This function retrieves the logger associated with the provided configuration ID,
@@ -217,7 +251,6 @@ class Logger:
 
     @staticmethod
     def blank_line(logger, count=1):
-
         """
         Inserts blank lines into the logger output.
         This function temporarily removes the formatter from the logger handlers,

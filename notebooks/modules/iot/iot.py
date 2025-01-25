@@ -36,6 +36,7 @@ class SAPIoTAPIWrapper(BaseAPIWrapper):
             self.iot_config["credentials"]["token_url"],
             None,
         )
+        self.token = self._get_token()
 
     def get_property_set_types(self):
         # get all property set types
@@ -192,6 +193,9 @@ class SAPIoTAPIWrapper(BaseAPIWrapper):
 
         response = requests.post(url, headers=headers, timeout=self.timeout)
 
+        # Parse the JSON response
+        data = response.json()
+
         # Raise an exception if the request failed
         if response.status_code == 208:
             self.log.warning(
@@ -200,12 +204,9 @@ class SAPIoTAPIWrapper(BaseAPIWrapper):
 
         elif response.status_code != 202 and response.status_code != 200:
             self.log.warning(
-                "Failed to initiate time series export: %s", response.status_code
+                f"Failed to initiate time series export: {response.status_code} with error: {data.get('message')}",
             )
             response.raise_for_status()
-
-        # Parse the JSON response
-        data = response.json()
 
         if "RequestId" in data:
             return data["RequestId"]
