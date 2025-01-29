@@ -94,19 +94,19 @@ extract:
   filters:
     # comment out "equipments_include" / "equipments_exclude" if not needed
     equipments_include:
-      - "equipmentguid1"
-      - "equipmentguid2"
-      - "equipmentguid3"
+      # - "equipmentguid1"
+      # - "equipmentguid2"
+      # - "equipmentguid3"
     equipments_exclude:
-      - "equipmentguid4"
-      - "equipmentguid5"
+      # - "equipmentguid4"
+      # - "equipmentguid5"
   indicator:
     directory: "../migration-data/indicators/extract"
   time-series:
     directory: "../migration-data/time-series/download/"
-    time_range_from: "2019-11-02"
-    time_range_to: "2020-12-15"
-    time_range_interval: "YEARS" #not yet used
+    time_range_from: "2017-11-02"
+    time_range_to: "2022-12-15"
+    time_range_interval: "YEARS" #options: "YEARS", "MONTHS", "WEEKS", "DAYS"
 
 transform:
   indicator:

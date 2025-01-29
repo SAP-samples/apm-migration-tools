@@ -131,10 +131,16 @@
               "type": "string"
             },
             "time_range_interval": {
-              "type": "string"
+              "type": "string",
+              "enum": ["YEARS", "MONTHS", "WEEKS", "DAYS"]
             }
           },
-          "required": ["directory", "time_range_to", "time_range_from"]
+          "required": [
+            "directory",
+            "time_range_to",
+            "time_range_from",
+            "time_range_interval"
+          ]
         },
         "alerts": {
           "type": "object",
@@ -194,7 +200,7 @@
           "minLength": 3,
           "maxLength": 3
         },
-        "acf_ssid":{
+        "acf_ssid": {
           "type": "string"
         },
         "ignore_cert": {
