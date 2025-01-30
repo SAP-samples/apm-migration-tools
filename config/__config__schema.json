@@ -170,6 +170,18 @@
           "items": {
             "type": "string"
           }
+        },
+        "floc_include": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "floc_exclude": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
         }
       },
       "title": "Filters"

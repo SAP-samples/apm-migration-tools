@@ -997,6 +997,16 @@ class ERPCharacteristics(Base):
     to_CharacteristicValue___deferred_uri = Column(String)
 
 
+class ApmTechnicalObjects(Base):
+    __tablename__ = "T_APM_TECHNICAL_OBJECTS"
+    idx = Column(Integer, primary_key=True, autoincrement=True)
+    tenantid = Column(String)
+    number = Column(String)
+    type = Column(String)
+    SSID = Column(String)
+    technicalObject = Column(String)
+
+
 class PreLoadIndicators(Base):
     __tablename__ = "T_PRE_LOAD_INDICATORS"
     idx = Column(Integer, primary_key=True, autoincrement=True)
@@ -1022,6 +1032,7 @@ class PreLoadIndicators(Base):
     apm_guid = Column(String)
     ssid = Column(String)
     technicalObject_type = Column(String)
+    APMTechnicalObjectNumber = Column(String)
     valid = Column(String)
 
 
@@ -1248,7 +1259,7 @@ class BaseView_TransformIndicators(TransformIndicators):
                 ExternalData.name,
                 # >>>>> External Data <<<<<
                 ExternalData.externalId,
-                ExternalData.objectType,
+                ExternalData.externalObjectTypeCode.label("objectType"),
                 # >>>>> Indicator Groups / APM Indicator Position <<<<<
                 IndicatorGroups.indicatorGroups_internalId,
                 IndicatorGroups.indicatorGroups_description_short,
