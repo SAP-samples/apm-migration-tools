@@ -92,14 +92,21 @@ systems:
 
 extract:
   filters:
-    # comment out "equipments_include" / "equipments_exclude" if not needed
-    equipments_include:
+    # comment out "equipment_include" / "equipment_exclude / floc_include / floc_exclude" if not needed
+    equipment_include:
       # - "equipmentguid1"
       # - "equipmentguid2"
       # - "equipmentguid3"
-    equipments_exclude:
+    equipment_exclude:
       # - "equipmentguid4"
       # - "equipmentguid5"
+    floc_include:
+      # - "flocguid1"
+      # - "flocguid2"
+      # - "flocguid3"
+    floc_exclude:
+      # - "flocguid4"
+      # - "flocguid5"
   indicator:
     directory: "../migration-data/indicators/extract"
   time-series:
