@@ -349,7 +349,7 @@ class SQLAlchemyClient:
         Returns:
             list: A list of model instances created from the DataFrame rows.
         """
-
+        df = df[[col.name for col in model.__table__.columns if col.name in df.columns]]
         instances = []
         for _, row in df.iterrows():
             row_data = row.to_dict()
