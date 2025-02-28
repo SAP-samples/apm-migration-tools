@@ -10,6 +10,7 @@ Classes:
 """
 
 import requests
+import time
 
 
 class BaseAPIWrapper:
@@ -20,19 +21,26 @@ class BaseAPIWrapper:
         self.token_url = token_url
         self.base_url = base_url
         self.timeout = 30
-        self.token = self._get_token()
+        # self.token = self._get_token()
+        self.token = None
+        self.token_expiry = 0
 
     def _get_token(self):
-        # Authenticate and get the token
-        response = requests.post(
-            self.token_url,
-            data={
-                "grant_type": "client_credentials",
-                "client_id": self.client_id,
-                "client_secret": self.client_secret,
-            },
-            timeout=self.timeout,
-        )
-        response.raise_for_status()
-        response_data = response.json()
-        return response_data.get("access_token")
+
+        if self.token_expiry is None or time.time() >= self.token_expiry:
+            # Authenticate and get the token
+            response = requests.post(
+                self.token_url,
+                data={
+                    "grant_type": "client_credentials",
+                    "client_id": self.client_id,
+                    "client_secret": self.client_secret,
+                },
+                timeout=self.timeout,
+            )
+            response.raise_for_status()
+            response_data = response.json()
+            self.token = response_data.get("access_token")
+            expires_in = response_data.get("expires_in")
+            self.token_expiry = time.time() + expires_in
+        return self.token
