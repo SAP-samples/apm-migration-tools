@@ -31,7 +31,7 @@ class ModelAPIWrapper(BaseAPIWrapper):
             requests.exceptions.HTTPError: If the request fails with a status code other than 200.
         """
 
-        headers = {"Authorization": f"Bearer {self.token}"}
+        headers = {"Authorization": f"Bearer {self._get_token()}"}
         # Construct the full URL with filters, top, and skip parameters
         url = f"{self.base_url}{self.path}/models"
 
@@ -62,7 +62,7 @@ class ModelAPIWrapper(BaseAPIWrapper):
         return self.get_models_by_type("FLOC")
 
     def get_models_by_type(self, model_type: str) -> list:
-        headers = {"Authorization": f"Bearer {self.token}"}
+        headers = {"Authorization": f"Bearer {self._get_token()}"}
         # Construct the full URL with filters, top, and skip parameters
         url = f"{self.base_url}{self.path}/models?$filter=modelType eq '{model_type}'"
 
