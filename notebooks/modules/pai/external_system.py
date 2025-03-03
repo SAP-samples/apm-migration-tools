@@ -31,7 +31,7 @@ class ExternalSystemAPIWrapper(BaseAPIWrapper):
             KeyError: If the expected keys are not found in the response JSON.
         """
         # get all equipments
-        headers = {"Authorization": f"Bearer {self.token}"}
+        headers = {"Authorization": f"Bearer {self._get_token()}"}
         # Construct the full URL with filters, top, and skip parameters
         url = f"{self.base_url}{self.path}/external/systems?$filter=SystemName eq '{system_name}'"
 
@@ -63,7 +63,7 @@ class ExternalSystemAPIWrapper(BaseAPIWrapper):
             endpoint fails with a status code other than 200.
         """
         # get all equipments
-        headers = {"Authorization": f"Bearer {self.token}"}
+        headers = {"Authorization": f"Bearer {self._get_token()}"}
         # Construct the full URL with filters, top, and skip parameters
         url = f"{self.base_url}{self.path}/external/systems"
 
@@ -93,7 +93,7 @@ class ExternalSystemAPIWrapper(BaseAPIWrapper):
         """
         all_external_systems = []
         headers = {
-            "Authorization": f"Bearer {self.token}",
+            "Authorization": f"Bearer {self._get_token()}",
             "Content-Type": "application/json",
         }
 

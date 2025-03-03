@@ -18,7 +18,7 @@ class FlocAPIWrapper(BaseAPIWrapper):
 
     def _get_total_count(self):
         # Get the total count of equipments
-        headers = {"Authorization": f"Bearer {self.token}"}
+        headers = {"Authorization": f"Bearer {self._get_token()}"}
         count_url = f"{self.base_url}{self.path}/floc/$count"
         response = requests.get(count_url, headers=headers, timeout=self.timeout)
         response.raise_for_status()
@@ -27,7 +27,7 @@ class FlocAPIWrapper(BaseAPIWrapper):
     def get_flocs(self, batch_size=500):
         # get all equipments
         headers = {
-            "Authorization": f"Bearer {self.token}",
+            "Authorization": f"Bearer {self._get_token()}",
             "Content-Type": "application/json",
         }
 
@@ -70,7 +70,7 @@ class FlocAPIWrapper(BaseAPIWrapper):
             ]
         # search for equipments by a given filter query
         headers = {
-            "Authorization": f"Bearer {self.token}",
+            "Authorization": f"Bearer {self._get_token()}",
             "content-type": "application/json",
         }
         all_equipments = []

@@ -18,7 +18,7 @@ class TemplatedAPIWrapper(BaseAPIWrapper):
 
     def get_template_by_type_code(self, type_code: str):
 
-        headers = {"Authorization": f"Bearer {self.token}"}
+        headers = {"Authorization": f"Bearer {self._get_token()}"}
         # Construct the full URL with filters, top, and skip parameters
         url = f"{self.base_url}{self.path}/templates?$filter=typeCode eq '{type_code}'"
 

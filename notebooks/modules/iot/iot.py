@@ -41,7 +41,7 @@ class SAPIoTAPIWrapper(BaseAPIWrapper):
     def get_property_set_types(self):
         # get all property set types
         headers = {
-            "Authorization": f"Bearer {self.token}",
+            "Authorization": f"Bearer {self._get_token()}",
             "Content-Type": "application/json",
             "accept": "application/json",
         }
@@ -70,7 +70,7 @@ class SAPIoTAPIWrapper(BaseAPIWrapper):
     def get_thing_type_by_external_id(self, external_id):
         # get thing type by external id
         headers = {
-            "Authorization": f"Bearer {self.token}",
+            "Authorization": f"Bearer {self._get_token()}",
             "accept": "application/json",
         }
         # Construct the full URL with filters, top, and skip parameters
@@ -104,7 +104,7 @@ class SAPIoTAPIWrapper(BaseAPIWrapper):
         """
         # get all thing types
         headers = {
-            "Authorization": f"Bearer {self.token}",
+            "Authorization": f"Bearer {self._get_token()}",
             "accept": "application/json",
         }
 
@@ -133,7 +133,7 @@ class SAPIoTAPIWrapper(BaseAPIWrapper):
     def get_property_sets_by_thing_type(self, thing_type: str) -> list:
         # get property set by thing type
         headers = {
-            "Authorization": f"Bearer {self.token}",
+            "Authorization": f"Bearer {self._get_token()}",
             "accept": "application/json",
         }
 
@@ -183,7 +183,7 @@ class SAPIoTAPIWrapper(BaseAPIWrapper):
         """
         # initiate time series export
         headers = {
-            "Authorization": f"Bearer {self.token}",
+            "Authorization": f"Bearer {self._get_token()}",
             "accept": "application/json",
         }
 
@@ -227,8 +227,9 @@ class SAPIoTAPIWrapper(BaseAPIWrapper):
             requests.exceptions.RequestException: If the HTTP request fails.
         """
         # get time series export status
+        token = self._get_token()
         headers = {
-            "Authorization": f"Bearer {self.token}",
+            "Authorization": f"Bearer {token}",
             "accept": "application/json",
         }
 
@@ -267,7 +268,7 @@ class SAPIoTAPIWrapper(BaseAPIWrapper):
             requests.exceptions.RequestException: If the HTTP request fails.
         """
         # download time series export
-        headers = {"Authorization": f"Bearer {self.token}"}
+        headers = {"Authorization": f"Bearer {self._get_token()}"}
 
         # Construct the full URL with filters, top, and skip parameters
         url = f"{self.iot_config['iot_endpoints']['cold_store_download']}/v1/DownloadData('{request_id}')"
@@ -324,7 +325,7 @@ class SAPIoTAPIWrapper(BaseAPIWrapper):
                 url,
                 headers={
                     "Accept": "application/octet-stream",
-                    "Authorization": f"Bearer {self.token}",
+                    "Authorization": f"Bearer {self._get_token()}",
                 },
                 timeout=self.timeout,
                 stream=True,
@@ -355,7 +356,7 @@ class SAPIoTAPIWrapper(BaseAPIWrapper):
             response = requests.get(
                 url,
                 headers={
-                    "Authorization": f"Bearer {self.token}",
+                    "Authorization": f"Bearer {self._get_token()}",
                     "Range": f"bytes={count}-{max_size}",
                     "If-Match": if_match,
                 },
