@@ -177,3 +177,4 @@ config/**
 !config/__config_global_schema.json
 !config/mapping.yaml
 test/**
+notebooks/custom/CUSTUM_MAPPING.csv

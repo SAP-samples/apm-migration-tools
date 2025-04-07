@@ -1,0 +1,3 @@
+﻿PAI_Beschreibung;PAI_Equipment;PAI_Datenpunkte;PAI_Indikatorgruppe;;Beschreibung;Equipment;Merkmal;Position
+L1-Motor M2800;14006978;Temperature_Engine;L1_Motor;;L1-Motor M2800;30004475;APM_TEMPERATUR;TEMP_MOTOR
+L1-Motor M2800;14006978;Temperature_Power;L1_Motor;;L1-Motor M2800;30004475;APM_TEMPERATUR;TEMP_POWER
