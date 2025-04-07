@@ -354,3 +354,25 @@ class ApiCharacteristics:
             )
 
         return res.json()
+
+    def get_characteristics(self):
+        """
+        Retrieves a full list of characteristics from the APM system.
+        Returns:
+            list: A list of characteristics retrieved from the system.
+        Raises:
+            APIException: If the API request fails with a status code other than 200.
+        """
+        url = f"{self.api_client.base_url}/Characteristics"
+        res = requests.get(
+            url=url,
+            headers=self.headers,
+            timeout=self.api_client.timeout,
+        )
+
+        if res.status_code != 200:
+            raise APIException(
+                endpoint=url, status_code=res.status_code, response=res.text
+            )
+
+        return res.json()
