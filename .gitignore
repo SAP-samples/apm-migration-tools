@@ -178,3 +178,4 @@ config/**
 !config/mapping.yaml
 test/**
 notebooks/custom/CUSTUM_MAPPING.csv
+notebooks/custom/equipment_mapping.yaml
