@@ -76,9 +76,9 @@ class EIoTApi:
         Initializes the class object with necessary variables and utility module objects
         """
         self.api_metadata = APMClient(
-            config_id=config_id, service="/EIoTMetadataSyncService/v1"
+            config_id=config_id, service="/EIoTMetadataSyncService"
         )
-        self.api_file = APMClient(config_id=config_id, service="/FileUploadService/v1")
+        self.api_file = APMClient(config_id=config_id, service="/FileUploadService")
         self.log = Logger.get_logger(config_id)
 
     def get_eiot_sync_status_by_to(
