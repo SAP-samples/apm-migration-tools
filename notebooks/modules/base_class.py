@@ -14,13 +14,15 @@ import time
 
 
 class BaseAPIWrapper:
-    def __init__(self, client_id, client_secret, token_url, base_url):
+    def __init__(
+        self, client_id, client_secret, token_url, base_url, timeout: int = 30
+    ):
 
         self.client_id = client_id
         self.client_secret = client_secret
         self.token_url = token_url
         self.base_url = base_url
-        self.timeout = 30
+        self.timeout = timeout
         # self.token = self._get_token()
         self.token = None
         self.token_expiry = 0

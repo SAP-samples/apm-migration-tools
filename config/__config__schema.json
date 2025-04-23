@@ -53,7 +53,13 @@
         },
         "level": {
           "type": "string",
-          "enum": ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"],
+          "enum": [
+            "DEBUG",
+            "INFO",
+            "WARNING",
+            "ERROR",
+            "CRITICAL"
+          ],
           "default": "INFO"
         },
         "print": {
@@ -61,7 +67,9 @@
           "default": false
         }
       },
-      "required": ["directory"]
+      "required": [
+        "directory"
+      ]
     },
     "Database": {
       "type": "object",
@@ -79,7 +87,10 @@
           "default": false
         }
       },
-      "required": ["connection", "drop_reload"],
+      "required": [
+        "connection",
+        "drop_reload"
+      ],
       "title": "Database"
     },
     "Load": {
@@ -97,7 +108,10 @@
           }
         }
       },
-      "required": ["indicator", "time-series"],
+      "required": [
+        "indicator",
+        "time-series"
+      ],
       "title": "Load"
     },
     "Extract": {
@@ -115,7 +129,9 @@
               "type": "string"
             }
           },
-          "required": ["directory"]
+          "required": [
+            "directory"
+          ]
         },
         "time-series": {
           "type": "object",
@@ -132,7 +148,12 @@
             },
             "time_range_interval": {
               "type": "string",
-              "enum": ["YEARS", "MONTHS", "WEEKS", "DAYS"]
+              "enum": [
+                "YEARS",
+                "MONTHS",
+                "WEEKS",
+                "DAYS"
+              ]
             }
           },
           "required": [
@@ -149,10 +170,16 @@
               "type": "string"
             }
           },
-          "required": ["directory"]
+          "required": [
+            "directory"
+          ]
         }
       },
-      "required": ["filters", "time-series", "indicator"],
+      "required": [
+        "filters",
+        "time-series",
+        "indicator"
+      ],
       "title": "Extract"
     },
     "Filters": {
@@ -193,19 +220,30 @@
         "flp": {
           "type": "string",
           "format": "uri",
-          "qt-uri-protocols": ["https"]
+          "qt-uri-protocols": [
+            "https"
+          ]
         },
         "name": {
           "type": "string"
         },
         "type": {
           "type": "string",
-          "enum": ["APM", "APM_eIoT", "IOT", "ERP", "ACF", "PAI"]
+          "enum": [
+            "APM",
+            "APM_eIoT",
+            "IOT",
+            "ERP",
+            "ACF",
+            "PAI"
+          ]
         },
         "host": {
           "type": "string",
           "format": "uri",
-          "qt-uri-protocols": ["https"]
+          "qt-uri-protocols": [
+            "https"
+          ]
         },
         "client": {
           "type": "string",
@@ -242,7 +280,11 @@
           }
         }
       },
-      "required": ["credentials", "name", "type"],
+      "required": [
+        "credentials",
+        "name",
+        "type"
+      ],
       "allOf": [
         {
           "if": {
@@ -253,7 +295,9 @@
             }
           },
           "then": {
-            "required": ["acf_ssid"]
+            "required": [
+              "acf_ssid"
+            ]
           }
         }
       ],
@@ -272,7 +316,9 @@
         "token_url": {
           "type": "string",
           "format": "uri",
-          "qt-uri-protocols": ["https"]
+          "qt-uri-protocols": [
+            "https"
+          ]
         },
         "x_api_key": {
           "type": "string"
@@ -282,6 +328,12 @@
         },
         "password": {
           "type": "string"
+        },
+        "timeout_seconds": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 60,
+          "default": 30
         }
       },
       "required": [],
@@ -294,22 +346,30 @@
         "config_thing": {
           "type": "string",
           "format": "uri",
-          "qt-uri-protocols": ["https"]
+          "qt-uri-protocols": [
+            "https"
+          ]
         },
         "thing": {
           "type": "string",
           "format": "uri",
-          "qt-uri-protocols": ["https"]
+          "qt-uri-protocols": [
+            "https"
+          ]
         },
         "cold_store": {
           "type": "string",
           "format": "uri",
-          "qt-uri-protocols": ["https"]
+          "qt-uri-protocols": [
+            "https"
+          ]
         },
         "cold_store_download": {
           "type": "string",
           "format": "uri",
-          "qt-uri-protocols": ["https"]
+          "qt-uri-protocols": [
+            "https"
+          ]
         }
       },
       "required": [
@@ -335,10 +395,15 @@
               "type": "string"
             }
           },
-          "required": ["directory"]
+          "required": [
+            "directory"
+          ]
         }
       },
-      "required": ["indicator", "time-series"],
+      "required": [
+        "indicator",
+        "time-series"
+      ],
       "title": "Transform"
     },
     "Indicator": {
@@ -398,7 +463,11 @@
           ]
         }
       },
-      "required": ["directory", "udr_input", "defaults"],
+      "required": [
+        "directory",
+        "udr_input",
+        "defaults"
+      ],
       "title": "Indicator"
     }
   }

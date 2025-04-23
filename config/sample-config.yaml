@@ -36,6 +36,7 @@ systems:
       # like this: PAI_CLIENT_SECRET="sb-33849ca0....", see file ".env.sample"
       client_secret: $DEV-PAI-CLIENT-SECRET
       token_url: "https://{subaccount-subdomain}.authentication.{region}.hana.ondemand.com/oauth/token"
+      timeout_seconds: 30 #optional, default value is 30 seconds
 
   # APM system configuration
   - name: "APM Test"
@@ -56,6 +57,7 @@ systems:
       # Sub-Domain, Sub-Account ID, Sub-Account API end point/APM FLP: To identify landscapes
       # Email ID: to send API keys
       x_api_key: $DEV-APM-API-KEY
+      timeout_seconds: 30 #optional, default value is 30 seconds
 
   # ERP system
   - name: "ERP_910"
@@ -67,6 +69,7 @@ systems:
     credentials:
       username: "XXX"
       password: $ERP_PASSWORD
+      timeout_seconds: 30 #optional, default value is 30 seconds
 
   #PAI system
   - name: "dca-test-pai"
@@ -76,6 +79,7 @@ systems:
       client_id: "XXX"
       client_secret: $PAI_CLIENT_SECRET
       token_url: "https://{subaccount-subdomain}.authentication.{region}.hana.ondemand.com/oauth/token"
+      timeout_seconds: 30 #optional, default value is 30 seconds
 
   #IOT system
   - name: "SAP IOT"
@@ -89,6 +93,7 @@ systems:
       client_id: $DEV-IOT-CLIENT-ID
       client_secret: $DEV-IOT-CLIENT-SECRET
       token_url: "https://{subaccount-subdomain}.authentication.{region}.hana.ondemand.com/oauth/token"
+      timeout_seconds: 30 #optional, default value is 30 seconds
 
 extract:
   filters:
