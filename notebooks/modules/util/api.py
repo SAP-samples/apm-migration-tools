@@ -26,6 +26,7 @@ class BaseAPIClient:
         token_url,
         base_url,
         x_api_key: Optional[str] = None,
+        timeout: Optional[int] = 30,
     ):
 
         """
@@ -56,7 +57,7 @@ class BaseAPIClient:
         self.x_api_key = x_api_key
         self.token = None
         self.token_expiry = 0
-        self.timeout = 30
+        self.timeout = timeout
 
     def get_token(self):
 
@@ -113,6 +114,7 @@ class APIClient(BaseAPIClient):
             client_secret=self.sys_config["credentials"]["client_secret"],
             token_url=self.sys_config["credentials"]["token_url"],
             x_api_key=self.sys_config.get("credentials", {}).get("x_api_key"),
+            timeout=self.sys_config["credentials"].get("timeout_seconds", 30),
         )
 
     def get(
@@ -395,7 +397,7 @@ class ERPClient:
         self.ignore_cert = self.sys_config["ignore_cert"]
         self.service = service
         self.entity_set = entity_set
-        self.timeout = 30
+        self.timeout = self.sys_config.get("timeout_seconds", 30)
 
         self.endpoint = (
             f"{self.host}/sap/opu/odata/sap/{self.service}/{self.entity_set}"
