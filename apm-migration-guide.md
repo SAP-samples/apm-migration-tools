@@ -86,12 +86,11 @@ The following subset of objects is supported with these tools:
 2. Risk and Criticality Assessment
 3. Risk and Criticality Assessment Template
 4. Failure Mode and Effects Analysis
-5. Reliability Centered Maintenance
-6. Indicators
-7. Alerts & Alert Types
-8. Time Series
+5. Indicators
+6. Alerts & Alert Types
+7. Time Series
 
-The first 5 tools (ASPM) are based on internal apis and on flows provided in an SAP internal DI (SAP Data Intelligence) instance so only D- or I- users can apply them.
+The first 4 tools (ASPM) are based on internal apis and on flows provided in an SAP internal DI (SAP Data Intelligence) instance so only D- or I- users can apply them.
 If a partner is engaged in _IT_ he might have a C-user with access to the SAP network which would also allow him to make use of these tools directly.
 
 The last 3 tools (PAI) have been built on public apis and can be used by anyone. They are provided in the same github repository in which this guide is provided.
