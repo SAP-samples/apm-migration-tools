@@ -217,6 +217,78 @@ Below are the tables, view, and API used for migrating alerts:
 
 The same validations are applied for checking if there are any errors encountered while posting the data to APM.
 
-## Extracting Alerts from APM (WIP)
+## Migrating Alerts and Alert types from SIOT to EIOT
 
-This part is WIP. This section includes the code for posting Alerts from APM SIOT to APM EIOT.
+This step is to migrate the alerts and alert types in the APM SIOT system to the EIOT (Embedded IOT) system. Here we will be using the same tables and files used in the previous steps to migrate the records as the structure of the data to be sent is the same. Make the sure the correct configuration file is used that has the both the APM system configurations
+
+First we extract the existing alert types from SIOT to EIOT system. for this we use the below api's and staging tables to temporarily store the data.
+
+
+| Table Name       | Description                                             |
+|------------------|---------------------------------------------------------|
+| T_ALERTTYPES     | Staging table for alert types to be migrated to the APM system. |
+| T_POST_ALERTTYPES | Table having migrated (or errored out) alert types.     |
+
+### View for Validation of Alerts
+
+| View Name         | Description                                      |
+|-------------------|--------------------------------------------------|
+| V_ALERTTYPE_CHECK | View for fetching the errored out alert types    |
+
+###  Get API for Alert Types
+
+| API              | Description                     | Reference                                                                 |
+|------------------|---------------------------------|---------------------------------------------------------------------------|
+| Get Alert types | Getting Alert types to APM      | {{APM SIOT host}}/AlertTypeService/v1/AlertType |
+
+After getting the alert types and staging into the table T_ALERTTYPES, we need to fill in the Deduplication values. As of now, we need to manually fill the values into a csv file which will be provided to the user. Make sure that the other values in the csv file are not changed or this can alter the alert types migrated into the EIOT system. Once the deduplication values are added, we use this file for posting the data.
+
+###  Post API for Alert Types
+
+| API              | Description                     | Reference                                                                 |
+|------------------|---------------------------------|---------------------------------------------------------------------------|
+| Post Alert types | Posting Alert types to APM      |[Post Alert type API](https://api.sap.com/api/AlertType_EIOT_APIs/path/post_AlertType) |
+
+Once the alert types are migrated to the EIOT system, check the error csv files if any alert types would have errored out. The validation is done by using the below view to compare the records.
+
+### View for Validation of Alerts
+
+| View Name         | Description                                      |
+|-------------------|--------------------------------------------------|
+| V_ALERTTYPE_CHECK | View for fetching the errored out alert types    |
+
+
+Once the alert types are migrated, we can migrate the corresponding alerts. Below are the tables and API's used for alerts migration
+
+| Table Name     | Description                                             |
+|----------------|---------------------------------------------------------|
+| T_ALERTS       | Staging table for alerts to be migrated to the APM system. |
+| T_POST_ALERTS  | Table having migrated (or errored out) alerts.          |
+
+### View for Validation
+
+| View Name      | Description                                      |
+|----------------|--------------------------------------------------|
+| V_ALERTS_CHECK | View that contains the invalid records for generating error report |
+
+### Get API for Alerts
+
+| API         | Reference                                                                 |
+|-------------|---------------------------------------------------------------------------|
+| Get Alerts | {{APM SIOT host}}/AlertsService/v1/Alert?$expand=TechnicalObject($select=Name,Number,Type)     |
+
+Few tranformations are done on the fields once extracted, to post into the EIOT system. Once the transformations are done, below API's are used
+
+### API for Alerts
+
+| API         | Reference                                                                 |
+|-------------|---------------------------------------------------------------------------|
+| Post Alerts | [Post Alert API](https://api.sap.com/api/Alert_EIOT_APIs/path/post_Alert)      |
+
+Once posted with the API, the error report will be generated if any errors occured. This is captured by a validating view , similar to the alert types. A csv will be generated to refer the errored out alerts.
+
+### View for Validation
+
+| View Name      | Description                                      |
+|----------------|--------------------------------------------------|
+| V_ALERTS_CHECK | View that contains the invalid records for generating error report |

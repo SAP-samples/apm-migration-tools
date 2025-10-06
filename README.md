@@ -6,7 +6,7 @@ This default template for SAP Samples repositories includes files for README, LI
 1. The LICENSE file:
 In most cases, the license for SAP sample projects is `Apache 2.0`.
 
-2. The .reuse/dep5 file: 
+2. The .reuse/dep5 file:
 The [Reuse Tool](https://reuse.software/) must be used for your samples project. You can find the .reuse/dep5 in the project initial. Please replace the parts inside the single angle quotation marks < > by the specific information for your repository.
 3. The README.md file (this file):
 Please edit this file as it is the primary description file for your project. You can find some placeholder titles for sections below.-->
@@ -51,7 +51,7 @@ The tool is built using Python Scripting in Jupyter Notebooks for easier sequenc
    ```
 
    * Download the repository from GitHub and extract by clicking [here](https://github.com/SAP-samples/apm-migration-tools/archive/refs/heads/main.zip)
-  
+
 3. Setup a **Python Virtual Environment** in the working (cloned or extracted) directory as follows:
 
 * The following command creates a virtual environment named `.venv`. You are free to use any other text instead.
