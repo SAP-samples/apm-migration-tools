@@ -11,6 +11,7 @@
 7. [Deduplication](#deduplication)
 8. [Pre and Post data validation](#pre-and-post-data-validation)
 9. [Staging the alerts to APM](#staging-the-alerts-to-apm)
+10. [Migrating Alerts and Alert types from SIOT to EIOT](#migrating-alerts-and-alert-types-from-siot-to-eiot)
 
 This document provides a detailed explanation of the steps and functions used in the `Alerts.ipynb` notebook for extracting, transforming, and loading alerts data.
 
