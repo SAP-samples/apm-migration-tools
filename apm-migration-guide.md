@@ -1,7 +1,7 @@
 
 # Introduction
 
-The legacy products SAP IoT, SAP PDMS (Predictive Maintenance and Service), SAP ASPM (Asset Strategy and Performance Management), SAP PAI (Predictive Asset Insights) or SAP APM (Asset Performance Management) based on SAP IoT 
+The legacy products SAP IoT, SAP PDMS (Predictive Maintenance and Service), SAP ASPM (Asset Strategy and Performance Management), SAP PAI (Predictive Asset Insights) or SAP APM (Asset Performance Management) based on SAP IoT
  have been sunset by SAP in 2022, 2023 and 2024 respectively.
 New customers cannot buy these products anymore.
 
@@ -40,7 +40,7 @@ We will use the above roles marked in _italic_ throughout the guide to allow you
 The below visualisation provides an overview how to migrate data from existing legacy tenants to a target APM eiot tenant.
 
 ```mermaid
-graph TD;  
+graph TD;
     PDMS/PAI-->data-export-->manual-checks-and-transformation-->setup-APM-eiot-tenant-->import-->APM-eiot;
     ASPM-->data-export-->manual-checks-and-transformation-->setup-APM-eiot-tenant-->import-->APM-eiot;
     APM-siot-->export-of-time-series-data-->setup-APM-eiot-tenant-->tenant-swap/copy-->import-of-time-series-data-->reestablishing-rules-logic-->APM-eiot;
@@ -59,7 +59,7 @@ APM eiot is onyl offered on Azure. So customers with legacy tenants in AWS have 
 From a commercial migration point of view the license metrics map to each other as follows.
 
 ```mermaid
-graph TD;  
+graph TD;
     ASPM-Equipments-->APM-eiot-Equipments+capacityunits
     PAI-datastreams-->APM-eiot-Equipments+capacityunits
     APM-siot-Equipments+datastreams-->APM-eiot-Equipments+capacityunits
@@ -98,7 +98,7 @@ The last 3 tools (PAI) have been built on public apis and can be used by anyone.
 
 For all of the remaining object types or configuration the migration has to happen manually (e.g. configuration, FMEA templates, devices ...) which means that in the new tenant they have to be recreated manually.
 
-All objects replicated from _ERP_ (in the rest of the document this might refer to either ECC or S4 Private Cloud Edition or S4 Publich Cloud Edition) can be replicated again from such backend but the configuration for this replication (e.g. which class types ...) has to be done manually following the APM getting started and the APM integration guides for APM eiot at https://help.sap.com/docs/SAP_APM. 
+All objects replicated from _ERP_ (in the rest of the document this might refer to either ECC or S4 Private Cloud Edition or S4 Publich Cloud Edition) can be replicated again from such backend but the configuration for this replication (e.g. which class types ...) has to be done manually following the APM getting started and the APM integration guides for APM eiot at https://help.sap.com/docs/SAP_APM.
 
 None of these migrations is simple as in all cases a new tenant and an old tenant have to exist in parallel until the usage can be switched over to the new tenant completely.
 The underyling data model is based in the case of PAI and ASPM on ACF (Asset Central Foundation) and in the case of APM on ERP (the One Domain Model to be precise) so the terminology and the functional possibilities change significantly.
@@ -131,7 +131,7 @@ Additional constraints for the migration can be there if you extended APM via AP
 For a full list of functional differences and features, that might be available only at a later date in APM eiot please refer to chapter [here](#Feature-Comparison) below.
 
 From a commercial point of view the old APM (base) license for APM was based on the material number 8012342.
-The new APM (base) license is based on material number 8018912. 
+The new APM (base) license is based on material number 8018912.
 
 The new APM license is required to create a subscription to APM with plan "production" and hence all customers should license the new APM license ahead of or at the latest during their migration project.
 
