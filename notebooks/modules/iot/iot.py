@@ -381,9 +381,12 @@ class SAPIoTAPIWrapper(BaseAPIWrapper):
                         prev_downloaded = count
                         before = time.time() * 1000
 
+        total_seconds = (later - now).total_seconds()
+        minutes = int(total_seconds // 60)
+        seconds = int(total_seconds % 60)
         log.info(
-            f"Total Time taken for the file download for request id {id}"
-            f"in minutes: {(later - now).total_seconds() / 60}"
+            f"Total Time taken for the file download for request id {request_id} "
+            f"is {minutes} minutes and {seconds} seconds."
         )
 
     def calculate_percentage_of_completion(
