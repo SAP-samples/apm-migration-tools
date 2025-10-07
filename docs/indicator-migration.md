@@ -147,7 +147,7 @@ flowchart LR
     a7(("Continue"))
 
     a1 ==> a4
-    
+
     subgraph yaml[" "]
       a2
       a3
@@ -155,7 +155,7 @@ flowchart LR
     a4 -.->yaml
     yaml -.->|"configuration validation error"|a5-.->a6
     yaml -.->|"validated successfully"|a7
-    
+
 
     class a1,a2,a3,a4,a5,a6,a7,yaml element;
     class a1,yaml mango;
@@ -163,7 +163,7 @@ flowchart LR
     class a4 blue;
     class a5,a6 error;
     class yaml border;
-    class a7 green; 
+    class a7 green;
 ```
 
 ### Database
@@ -269,7 +269,7 @@ flowchart LR
     a5("<pre>template 3</pre>")
     a6("<pre>template 4<br>...<br>template n</pre>")
 
-   
+
     a1 ==1:1==> a2
     a2 -.-> |"primary"| a3
     a2 -.-> |"secondary"| a4
@@ -296,7 +296,7 @@ flowchart LR
     classDef grey fill:#A9B4BE, color:#12171C, stroke:#12171C;
     classDef teal fill:#2CE0BF, color:#012931, stroke:#012931;
     classDef border stroke:#D20A0A,stroke-width:5px;
-    
+
     a1("<b>Technical Objects</b><br>(EQU/FLOC)")
     a2("<b>Model</b>")
     a3("<b>Template</b>")

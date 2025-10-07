@@ -2,14 +2,31 @@ import requests
 from modules.util.api import APIClient
 from modules.util.config import get_config_by_id, get_system_by_type
 from modules.util.helpers import Logger
+import math
 
 
 class APMAlertAPIWrapper(APIClient):
-    def __init__(self, config_id: str):
-        super().__init__(config_id, "APM")
+    def __init__(self, config_id: str, system_type: str = "APM"):
+        super().__init__(config_id, system_type)
         self.alerts_path = "/AlertsService/v1"
         self.alerttpye_path = "/AlertTypeService/v1"
         self.log = Logger.get_logger(config_id)
+
+    @staticmethod
+    def clean_nan(obj):
+        """
+        Recursively traverses the input object and replaces any NaN values with None.
+        Args:
+            obj: The input object which can be a dictionary, list, or a primitive data type.
+            Returns:
+            The cleaned object with NaN values replaced by None."""
+        if isinstance(obj, float) and math.isnan(obj):
+            return None
+        if isinstance(obj, dict):
+            return {k: APMAlertAPIWrapper.clean_nan(v) for k, v in obj.items()}
+        if isinstance(obj, list):
+            return [APMAlertAPIWrapper.clean_nan(x) for x in obj]
+        return obj
 
     def getApmAlerts(self):
         """
@@ -146,6 +163,7 @@ class APMAlertAPIWrapper(APIClient):
             "TriggeredOn": triggered_on,
             "TechnicalObject": technical_objects,
         }
+        body = APMAlertAPIWrapper.clean_nan(body)
 
         response = requests.post(url, headers=headers, json=body, timeout=self.timeout)
 
@@ -203,6 +221,7 @@ class APMAlertAPIWrapper(APIClient):
             "DeduplicationPeriod": deduplication_period,
             "DeduplicationIsEnabled": deduplication_is_enabled,
         }
+        body = APMAlertAPIWrapper.clean_nan(body)
 
         response = requests.post(url, headers=headers, json=body, timeout=self.timeout)
 
