@@ -28,7 +28,7 @@ This repository contains a list of tools for migrating customers from PAI(PDMS) 
 | ----- | :---------: | :---------: | :---------: |
 | **Indicator** | ✔ | ✔ | n/a |
 | **Alerts**    | ✔ | ✔ | ✔ |
-| **Timeseries** | ✔ | n/a | n/a |
+| **Timeseries** | ✔ | n/a | use SAP IoT export api and APM eiot file upload api |
 
 The tool is built using Python Scripting in Jupyter Notebooks for easier sequencing & execution of the migration steps.
 
