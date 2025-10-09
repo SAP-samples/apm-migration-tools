@@ -22,13 +22,13 @@ Please edit this file as it is the primary description file for your project. Yo
 
 ## Description
 <!-- Please include SEO-friendly description -->
-This repository contains a list of tools for migrating customers from PAI(PDMS) / ASPM to APM. Following are the list of available tools in this repository.
+This repository contains a list of tools for migrating customers from PAI(PDMS) / ASPM to APM and from APM SIoT to APM EIoT (Embedded IoT). Following are the list of available tools in this repository.
 
-| Tool | PAI → APM | ASPM → APM |
-| ----- | :---------: | :---------: |
-| **Indicator** | ✔ | ✔ |
-| **Alerts**    | ✔ | n/a |
-| **Timeseries** | ✔ | n/a |
+| Tool | PAI → APM | ASPM → APM | APM SIoT → APM EIoT |
+| ----- | :---------: | :---------: | :---------: |
+| **Indicator** | ✔ | ✔ | n/a |
+| **Alerts**    | ✔ | ✔ | ✔ |
+| **Timeseries** | ✔ | n/a | n/a |
 
 The tool is built using Python Scripting in Jupyter Notebooks for easier sequencing & execution of the migration steps.
 
