@@ -118,6 +118,7 @@ If the copy step is not needed (tenant is already on Azure, scope used requires 
 
 The copy and the swap will not retain any rules as the rule logic is so fundamentally different between siot and eoit that all rules have to be reestablished manually.
 It will also not retain any time series data - this will have to be exported from the old tenant and imported into the swapped tenant.
+However, the migration of Alerts from APM SIoT to APM EIoT has been implemented, covering all alert-related data, including alert types and associated configurations, to ensure continuity in alert management between the two environments. This feature is added in the Alerts and Alerts types migration tool, which migrates data with the public api's.
 Lastly everything that is device management specific (e.g. mqtt endpoints, additionally established trust certificates, gateways, firmware coding, payload structure ...) will basically be not available until device management will be offered again in APM eiot and even then it will be fundamentally different and retention is likely not possible.
 
 In regards of migration scope and effort based on the usage scope the migration can range from something that can be done on the weekend to a multi-week project. Here are a few examples:
