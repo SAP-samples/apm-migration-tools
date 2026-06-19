@@ -102,7 +102,7 @@ class ApiCharacteristicHeader:
                 headers=headers,
                 params=params,
                 timeout=self.api_client.timeout,
-                verify=False,
+                verify=not self.api_client.ignore_cert,
             )
             self.log.debug(f"[GET] Search for Characteristic {characteristic}")
             if res.status_code != 200:
@@ -176,7 +176,7 @@ class ApiCharacteristicHeader:
                 json=body,
                 timeout=self.api_client.timeout,
                 cookies=cookies,
-                verify=False,
+                verify=not self.api_client.ignore_cert,
             )
             self.log.debug(f"[POST] Create Characteristic {char}")
             if res.status_code != 201:
@@ -220,7 +220,7 @@ class ApiCharacteristicHeader:
                 params=params,
                 timeout=self.api_client.timeout,
                 cookies=cookies,
-                verify=False,
+                verify=not self.api_client.ignore_cert,
             )
             self.log.debug(f"[DELETE] Delete Characteristic {guid}")
             if res.status_code != 204:

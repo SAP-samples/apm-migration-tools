@@ -439,7 +439,7 @@ class ERPClient:
             headers=headers,
             params=params,
             timeout=self.timeout,
-            verify=False,
+            verify=not self.ignore_cert,
         )
 
         if response.status_code != 200:
