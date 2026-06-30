@@ -40,7 +40,7 @@ class BaseModelIndicators:
         }
 
         api_url = f"{self.endpoint}({guid})/model/templates"
-        res = requests.get(url=api_url, headers=headers)
+        res = requests.get(url=api_url, headers=headers, timeout=self.api_client.timeout)
 
         if res.status_code == 429:
             retry_attempt = res.headers.get("Retry-After", "unknown")
